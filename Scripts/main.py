@@ -2,7 +2,7 @@ import pygame
 from games import Game
 
 pygame.init()
-
+clock = pygame.time.Clock()
 
 
 #display gerer la fenetre de notre jeu
@@ -16,17 +16,20 @@ running = True
 #charger notre jeu
 game= Game()
 
-
-
 while running:
+    dt = clock.tick() / 1000.0
+    fps = clock.get_fps()
+    if fps != 0 :
+        dt = 1 / fps
+    
     screen .fill((255,255,255))
     screen.blit(game.joueur.image, game.joueur.rect)
 
 
     if game.pressed.get(pygame.K_RIGHT) and game.joueur.rect.x + game.joueur.rect.width < screen.get_width():
-        game.joueur.move_right()
+        game.joueur.move_right(dt)
     elif game.pressed.get(pygame.K_LEFT) and game.joueur.rect.x >0:
-        game.joueur.move_left()
+        game.joueur.move_left(dt)
     
     #10    1014
     
