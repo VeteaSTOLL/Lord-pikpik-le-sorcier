@@ -1,3 +1,3 @@
 # Lord-pikpik-le-sorcier
 
-yo je test un truc
+Lord pikpik le sorcier est un jeu d'énigmes où on peut modifier son personnage à volonté.

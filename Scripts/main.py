@@ -17,13 +17,19 @@ running = True
 game= Game()
 
 while running:
+    # On obtient le differentiel de temps entre la dernière frame et l'avant dernière frame : utile pour rendre le gameplay indépendant du framerate.
     dt = clock.tick() / 1000.0
     fps = clock.get_fps()
     if fps != 0 :
-        dt = 1 / fps
-    
+        dt = 1 / fps    
+
+    #affichage
     screen .fill((255,255,255))
     screen.blit(game.joueur.image, game.joueur.rect)
+
+    if game.crafting_interface:
+        #on affiche l'UI pour le craft du perso
+        pygame.draw.rect(screen, (100,100,100), pygame.Rect(30, 30, screen.get_width()-60, screen.get_height()-60))
 
 
     if game.pressed.get(pygame.K_RIGHT) and game.joueur.rect.x + game.joueur.rect.width < screen.get_width():
@@ -31,21 +37,30 @@ while running:
     elif game.pressed.get(pygame.K_LEFT) and game.joueur.rect.x >0:
         game.joueur.move_left(dt)
     
+    if game.pressed_down.get(pygame.K_e):
+        #ouvrir le menu de craft
+        game.crafting_interface = not game.crafting_interface
+    
     #10    1014
     
     pygame.display.flip()
     
-    #si le joueur ferme la fenhetre
+
+    game.pressed_down = {}
+    game.pressed_up = {}
+    #si le joueur ferme la fenetre
     for event in pygame.event.get():
-        #que l'evenhemenht est fermeture de fenhetre
+        #que l'evenement est fermeture de fenetre
         if event.type == pygame.QUIT:
            running = False 
            pygame.quit() 
 
         elif event.type == pygame.KEYDOWN:
             game.pressed[event.key] = True
-        elif event.type ==pygame.KEYUP:
+            game.pressed_down[event.key] = True
+        elif event.type == pygame.KEYUP:
             game.pressed[event.key] =False
+            game.pressed_up[event.key] = True
                 
 
     
