@@ -1,5 +1,6 @@
 import pygame
 from games import Game
+from platformClass import Platform
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -26,6 +27,13 @@ while running:
     #affichage
     screen .fill((255,255,255))
     screen.blit(game.joueur.image, game.joueur.rect)
+    screen.blit(game.roulette.image, game.roulette.rect)
+    game.display_platforms(screen)
+
+    # Appliquer la gravité au joueur
+    game.joueur.apply_gravity(dt)
+    # Vérifier les collisions du joueur avec les plateformes
+    game.check_collisions()
 
     if game.crafting_interface:
         #on affiche l'UI pour le craft du perso
@@ -40,6 +48,9 @@ while running:
     if game.pressed_down.get(pygame.K_e):
         #ouvrir le menu de craft
         game.crafting_interface = not game.crafting_interface
+    # Sauter si la touche Espace est pressée
+    if game.pressed.get(pygame.K_SPACE):
+        game.joueur.jump()
     
     #10    1014
     
@@ -61,12 +72,11 @@ while running:
         elif event.type == pygame.KEYUP:
             game.pressed[event.key] =False
             game.pressed_up[event.key] = True
+            
+
+        
                 
 
     
            
         
-
-
-
-
