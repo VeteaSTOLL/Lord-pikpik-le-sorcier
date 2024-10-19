@@ -21,7 +21,7 @@ class Game:
         #////////////////PLATEFRORMS//////////
         
         # Liste des rectangles de plateformes
-        self.platform_lis_rect = [pygame.Rect(30, 600, 300, 50), pygame.Rect(400, 450, 300, 50)] #(x,y (point supp gauche),largeur,hauteur)
+        self.platform_lis_rect = [pygame.Rect(50, 600, 300, 50), pygame.Rect(400, 450, 300, 50)] #(x,y (point supp gauche),largeur,hauteur)
 
         # Liste des plateformes
         self.platforms = []

@@ -29,6 +29,7 @@ while running:
     screen.blit(game.joueur.image, game.joueur.rect)
     screen.blit(game.roulette.image, game.roulette.rect)
     game.display_platforms(screen)
+
     game.debug.draw_grid(screen, (255,0,0), 50)
     game.debug.draw_destination(game.joueur.destination, screen, (255,0,0))
 
@@ -38,22 +39,25 @@ while running:
 
     pygame.display.flip()
 
-
     # Appliquer la gravité au joueur
     game.joueur.apply_gravity(dt)
+
     # Vérifier les collisions du joueur avec les plateformes
-    game.check_collisions()
+    # game.check_collisions()
 
+    if abs(game.joueur.pos[0] - game.joueur.destination[0]*50) < game.joueur.speed * dt * 1.5:
+        game.joueur.pos[0] = game.joueur.destination[0]*50
+        game.joueur.rect.x = game.joueur.pos[0]
+        if game.pressed.get(pygame.K_RIGHT) and game.joueur.rect.x + game.joueur.rect.width < screen.get_width():
+            game.joueur.move(1)
+        if game.pressed.get(pygame.K_LEFT) and game.joueur.rect.x > 0:
+            game.joueur.move(-1)
+    else:
+        game.joueur.update_pos(dt)
 
-
-    if game.pressed.get(pygame.K_RIGHT) and game.joueur.rect.x + game.joueur.rect.width < screen.get_width():
-        game.joueur.move_right()
-    if game.pressed.get(pygame.K_LEFT) and game.joueur.rect.x >0:
-        game.joueur.move_left()
     if game.pressed.get(pygame.K_SPACE):
         game.joueur.jump()
     # Sauter si la touche Espace est pressée
-    game.joueur.move(dt)
 
     if game.pressed_down.get(pygame.K_e):
         #ouvrir le menu de craft
@@ -62,17 +66,11 @@ while running:
         #active le mode debug
         game.debug.debug_mode = not game.debug.debug_mode
 
-    
-    
-    #10    1014
-    
-    
-
     game.pressed_down = {}
     game.pressed_up = {}
-    #si le joueur ferme la fenetre
+    
     for event in pygame.event.get():
-        #que l'evenement est fermeture de fenetre
+        #si le joueur ferme la fenetre
         if event.type == pygame.QUIT:
            running = False 
            pygame.quit() 
