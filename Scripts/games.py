@@ -2,6 +2,7 @@ import pygame
 from joueur import joueur
 from joueur import roulette
 from platformClass import Platform
+from debug import *
 
 
 class Game:
@@ -9,6 +10,7 @@ class Game:
         #generer notre joueur
         self.roulette = roulette()
         self.joueur = joueur()
+        self.debug = debug()
         
         self.pressed = {}
         self.pressed_down = {}
@@ -19,7 +21,7 @@ class Game:
         #////////////////PLATEFRORMS//////////
         
         # Liste des rectangles de plateformes
-        self.platform_lis_rect = [pygame.Rect(30, 600, 300, 50), pygame.Rect(400, 400, 300, 50)] #(x,y (point supp gauche),largeur,hauteur)
+        self.platform_lis_rect = [pygame.Rect(30, 600, 300, 50), pygame.Rect(400, 450, 300, 50)] #(x,y (point supp gauche),largeur,hauteur)
 
         # Liste des plateformes
         self.platforms = []
@@ -33,8 +35,6 @@ class Game:
         # Parcourir et afficher chaque plateforme dans la liste
         for platform in self.platforms:
             platform.display(surface)
-
-
 
     def check_collisions(self):
         #Vérifie les collisions du joueur avec les plateformes
@@ -50,6 +50,6 @@ class Game:
                     self.joueur.velocity_y = 0  # Arrêter la chute
                     self.joueur.is_jumping = False  # Il n'est plus en saut
                     break
-        else:
+        #else:
             # Si aucune collision, le joueur est en l'air
-            self.joueur.is_jumping = True
+            # self.joueur.is_jumping = True
