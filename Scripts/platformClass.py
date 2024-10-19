@@ -1,6 +1,5 @@
 import pygame
 
-
 class Platform(pygame.sprite.Sprite):
     def __init__(self, rect):
         super().__init__()

@@ -1,6 +1,5 @@
 import pygame
 from games import Game
-from platformClass import Platform
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -28,10 +27,12 @@ while running:
     screen .fill((255,255,255))
     screen.blit(game.joueur.image, game.joueur.rect)
     screen.blit(game.roulette.image, game.roulette.rect)
-    game.display_platforms(screen)
 
-    game.debug.draw_grid(screen, (255,0,0), 50)
-    game.debug.draw_destination(game.joueur.destination, screen, (255,0,0))
+    game.collision_list.draw_collisions(screen)
+
+    if game.debug.debug_mode:
+        game.debug.draw_grid(screen, (255,0,0), 50)
+        game.debug.draw_destination(game.joueur.destination, screen, (255,0,0))
 
     if game.crafting_interface:
         #on affiche l'UI pour le craft du perso
@@ -40,18 +41,15 @@ while running:
     pygame.display.flip()
 
     # Appliquer la gravité au joueur
-    game.joueur.apply_gravity(dt)
-
-    # Vérifier les collisions du joueur avec les plateformes
-    # game.check_collisions()
+    game.joueur.apply_gravity(dt, game.collision_list)
 
     if abs(game.joueur.pos[0] - game.joueur.destination[0]*50) < game.joueur.speed * dt * 1.5:
         game.joueur.pos[0] = game.joueur.destination[0]*50
         game.joueur.rect.x = game.joueur.pos[0]
         if game.pressed.get(pygame.K_RIGHT) and game.joueur.rect.x + game.joueur.rect.width < screen.get_width():
-            game.joueur.move(1)
+            game.joueur.move(1, game.collision_list)
         if game.pressed.get(pygame.K_LEFT) and game.joueur.rect.x > 0:
-            game.joueur.move(-1)
+            game.joueur.move(-1, game.collision_list)
     else:
         game.joueur.update_pos(dt)
 
@@ -81,11 +79,3 @@ while running:
         elif event.type == pygame.KEYUP:
             game.pressed[event.key] =False
             game.pressed_up[event.key] = True
-            
-
-        
-                
-
-    
-           
-        
