@@ -46,9 +46,9 @@ while running:
     if abs(game.joueur.pos[0] - game.joueur.destination[0]*50) < game.joueur.speed * dt * 1.5:
         game.joueur.pos[0] = game.joueur.destination[0]*50
         game.joueur.rect.x = game.joueur.pos[0]
-        if game.pressed.get(pygame.K_RIGHT) and game.joueur.rect.x + game.joueur.rect.width < screen.get_width():
+        if game.pressed.get(pygame.K_RIGHT):
             game.joueur.move(1, game.collision_list)
-        if game.pressed.get(pygame.K_LEFT) and game.joueur.rect.x > 0:
+        if game.pressed.get(pygame.K_LEFT):
             game.joueur.move(-1, game.collision_list)
     else:
         game.joueur.update_pos(dt)
