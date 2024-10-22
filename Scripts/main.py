@@ -6,18 +6,18 @@ clock = pygame.time.Clock()
 
 
 #display gerer la fenetre de notre jeu
-pygame.display.set_caption("test") 
+pygame.display.set_caption("Bouboule") 
 screen = pygame.display.set_mode((1000, 750)) 
 
 running = True 
 
-#clock = pygame.time.Clock()
+
 
 #charger notre jeu
 game= Game()
 
 while running:
-    # On obtient le differentiel de temps entre la dernière frame et l'avant dernière frame : utile pour rendre le gameplay indépendant du framerate.
+
     dt = clock.tick() / 1000.0
     fps = clock.get_fps()
     if fps != 0 :
@@ -26,18 +26,28 @@ while running:
     #affichage
     screen .fill((255,255,255))
     screen.blit(game.joueur.image, game.joueur.rect)
-    screen.blit(game.roulette.image, game.roulette.rect)
-
+    
     game.collision_list.draw_collisions(screen)
+    
+    game.item_list.check_collision_and_add_item(game.joueur.rect)
+    game.item_list.draw_items(screen)
+
 
     if game.debug.debug_mode:
         game.debug.draw_grid(screen, (255,0,0), 50)
         game.debug.draw_destination(game.joueur.destination, screen, (255,0,0))
 
+
     if game.crafting_interface:
         #on affiche l'UI pour le craft du perso
-        pygame.draw.rect(screen, (100,100,100), pygame.Rect(30, 30, screen.get_width()-60, screen.get_height()-60))
+        #pygame.draw.rect(screen, (100,100,100),  pygame.Rect(30, 30, screen.get_width()-60, screen.get_height()-60))
+        #game.item_list.draw_items_collected(screen)
+        game.crafting_interface = game.interface_craft
+        game.crafting_interface.draw_crafting_interface(screen, game.item_list)
+        print("AVENGERSS")
 
+        
+        
     pygame.display.flip()
 
     # Appliquer la gravité au joueur
