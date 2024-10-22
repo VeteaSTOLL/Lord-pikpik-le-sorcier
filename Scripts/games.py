@@ -1,14 +1,15 @@
 import pygame
 from joueur import joueur
-from joueur import roulette
+from interface_craft import *
 from collisions import collision_list
+from objets import item_list
 from debug import *
 
 
 class Game:
     def __init__(self):
         #generer notre joueur
-        self.roulette = roulette()
+        
         self.joueur = joueur()
         self.debug = debug()
         
@@ -18,4 +19,6 @@ class Game:
 
         self.crafting_interface = False
         
-        self.collision_list = collision_list()    
+        self.collision_list = collision_list()
+        self.item_list = item_list() 
+        self.interface_craft = Interface_Craft()   
