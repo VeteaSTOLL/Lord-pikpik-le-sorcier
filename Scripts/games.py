@@ -17,7 +17,7 @@ class Game:
         self.pressed_down = {}
         self.pressed_up = {}
 
-        self.crafting_interface = False
+        self.crafting_interface_is_open = False
         
         self.collision_list = collision_list()
         self.item_list = item_list() 

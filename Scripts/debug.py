@@ -1,8 +1,12 @@
+from collections.abc import Iterable
 import pygame
 
 class debug(): 
     def __init__(self):
+        pygame.font.init()
         self.debug_mode = False
+
+        self.font = pygame.font.SysFont('arial', 30)
 
     def draw_grid(self, screen, line_color, grid_size):
         for i in range(screen.get_width()//grid_size + 1):
@@ -13,5 +17,17 @@ class debug():
             # lignes
             pygame.draw.line(screen, line_color, (0, i*grid_size), (screen.get_width(), i*grid_size))
             
-    def draw_destination(self, destination, screen, circle_color):
-        pygame.draw.circle(screen, circle_color, (destination[0]*50 + 25, destination[1]*50 + 25), 5)
+    def draw_destination(self, destination, body, screen, circle_color):
+        for i in range(5):
+            for j in range(5):
+                if body[i][j] != 0:
+                    pygame.draw.circle(screen, circle_color, ((destination[0] + j)*50 + 25, (destination[1] + i)*50 + 25), 5)
+
+        pygame.draw.circle(screen, (255-circle_color[0],255-circle_color[1],255-circle_color[2]), (destination[0]*50 + 25, destination[1]*50 + 25), 10)
+
+    def draw_infos(self, screen, fps, pos):
+        fps_text = self.font.render('fps : ' + str(round(fps)), False, (0, 0, 0))
+        pos_text = self.font.render(f'x : {int(pos[0])}, y : {int(pos[1])}', False, (0, 0, 0))
+
+        screen.blit(fps_text, (10,0))
+        screen.blit(pos_text, (10,30))

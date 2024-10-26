@@ -31,3 +31,10 @@ class collision_list():
             if (c.position[0] <= coords[0] and coords[0] < c.position[0]+c.size[0]) and (c.position[1] <= coords[1] and coords[1] < c.position[1]+c.size[1]):
                 return True
         return False
+    
+    def check_collision_player(self, coords, body):
+        for i in range(5):
+            for j in range(5):
+                if body[i][j] != 0 and self.check_collision((coords[0] + j, coords[1] + i)):
+                    return True                
+        return False
