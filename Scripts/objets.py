@@ -18,7 +18,6 @@ class item ():
 class item_list():
     def __init__(self):        
         self.items = []
-        self.item_collected=[]
 
         self.items.append(item("roulette", "img/roulette.jpg", 12,13,1,1))
         self.items.append(item("bouboule", "img/rond_noir.png", 14,13,1,1))
@@ -36,7 +35,6 @@ class item_list():
                 for i in range(5):
                     for j in range(5):
                         if body[i][j] != 0 and item.position == [coords[0] + j, coords[1] + i]:
-                            self.item_collected.append(item)  
                             item.collected = True
                             
                             print(item.name)

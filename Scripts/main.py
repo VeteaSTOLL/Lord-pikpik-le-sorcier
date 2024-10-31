@@ -45,10 +45,12 @@ while running:
  
     pygame.display.flip()
 
-    # Appliquer la gravité au joueur
-    game.joueur.apply_gravity(dt, game.collision_list)
 
     if game.joueur.can_move:
+        
+        # Appliquer la gravité au joueur
+        game.joueur.apply_gravity(dt, game.collision_list)
+
         if abs(game.joueur.pos[0] - game.joueur.destination[0]*50) < game.joueur.speed * dt * 1.5:
             game.joueur.pos[0] = game.joueur.destination[0]*50
             if game.pressed.get(pygame.K_RIGHT):
@@ -81,9 +83,11 @@ while running:
            running = False 
            pygame.quit() 
 
-        elif event.type == pygame.KEYDOWN:
+        if event.type == pygame.KEYDOWN:
             game.pressed[event.key] = True
             game.pressed_down[event.key] = True
-        elif event.type == pygame.KEYUP:
+        if event.type == pygame.KEYUP:
             game.pressed[event.key] = False
             game.pressed_up[event.key] = True
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            game.interface_craft.click(pygame.mouse.get_pos(), game.joueur.body, game.joueur.destination, game.collision_list, event.button == 1)

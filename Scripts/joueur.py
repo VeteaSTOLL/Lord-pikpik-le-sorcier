@@ -21,8 +21,8 @@ class joueur(pygame.sprite.Sprite):
 
         #forme du perso
         self.body = [[0,0,0,0,0],
+                     [0,0,0,0,0],
                      [0,0,1,0,0],
-                     [0,1,1,1,0],
                      [0,0,0,0,0],
                      [0,0,0,0,0]]
 

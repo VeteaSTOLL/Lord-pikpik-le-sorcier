@@ -1,4 +1,3 @@
-from collections.abc import Iterable
 import pygame
 
 class case():
@@ -6,8 +5,13 @@ class case():
         self.rect = pygame.Rect(x,y,width,height)
         self.color = (255,255,255)
         self.element = 0
+
         self.i = i
         self.j = j
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
 
     def update(self, body):
         self.element = body[self.j][self.i]
@@ -16,12 +20,17 @@ class case():
         pygame.draw.rect(screen, self.color, self.rect)
         if self.element != 0:            
             pygame.draw.rect(screen, (0,0,0), self.rect)
+
+    def click(self, body, coords, collision_list, is_left_click):
+        if is_left_click:
+            if not collision_list.check_collision((coords[0] + self.i, coords[1] + self.j)):
+                #vérifier si il y a des cases occupées adjacentes
+                self.element = 1
+        else:
+            #vérifier si il y a au moins 2 cases occupées + si toutes les cases adjacentes ont un autre support
+            self.element = 0
+        body[self.j][self.i] = self.element
     
-
-
-
-
-
 
 
 class Interface_Craft():
@@ -62,3 +71,9 @@ class Interface_Craft():
     def update(self, body):
         for case in self.cases:
             case.update(body)
+
+    def click(self, mouse_pos, body, coords, collision_list, is_left_click):        
+        for case in self.cases:
+            if case.x <= mouse_pos[0] and mouse_pos[0] <= case.x + case.width and case.y <= mouse_pos[1] and mouse_pos[1] <= case.y + case.height:
+                case.click(body, coords, collision_list, is_left_click)
+                return
