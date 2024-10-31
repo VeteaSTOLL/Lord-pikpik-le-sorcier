@@ -7,7 +7,7 @@ from debug import *
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, screen):
         #generer notre joueur
         
         self.joueur = joueur()
@@ -21,4 +21,4 @@ class Game:
         
         self.collision_list = collision_list()
         self.item_list = item_list() 
-        self.interface_craft = Interface_Craft()   
+        self.interface_craft = Interface_Craft(screen.get_width(), screen.get_height())   

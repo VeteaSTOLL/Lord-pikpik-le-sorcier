@@ -14,7 +14,7 @@ running = True
 
 
 #charger notre jeu
-game= Game()
+game= Game(screen)
 
 while running:
     #permet de renseigner la variable "dt" qui est le différentiel de temps entre l'avant dernière frame et la dernière frame, prartique pour pouvoir rendre le gameplay indépendant du framerate
@@ -41,29 +41,33 @@ while running:
 
     if game.crafting_interface_is_open:
         #on affiche l'UI pour le craft du perso
-        game.interface_craft.draw_crafting_interface(screen, game.item_list)
+        game.interface_craft.draw_crafting_interface(screen)
  
     pygame.display.flip()
 
     # Appliquer la gravité au joueur
     game.joueur.apply_gravity(dt, game.collision_list)
 
-    if abs(game.joueur.pos[0] - game.joueur.destination[0]*50) < game.joueur.speed * dt * 1.5:
-        game.joueur.pos[0] = game.joueur.destination[0]*50
-        if game.pressed.get(pygame.K_RIGHT):
-            game.joueur.move(1, game.collision_list)
-        if game.pressed.get(pygame.K_LEFT):
-            game.joueur.move(-1, game.collision_list)
-    else:
-        game.joueur.update_pos(dt)
+    if game.joueur.can_move:
+        if abs(game.joueur.pos[0] - game.joueur.destination[0]*50) < game.joueur.speed * dt * 1.5:
+            game.joueur.pos[0] = game.joueur.destination[0]*50
+            if game.pressed.get(pygame.K_RIGHT):
+                game.joueur.move(1, game.collision_list)
+            if game.pressed.get(pygame.K_LEFT):
+                game.joueur.move(-1, game.collision_list)
+        else:
+            game.joueur.update_pos(dt)
 
-    if game.pressed.get(pygame.K_SPACE):
-        game.joueur.jump()
-    # Sauter si la touche Espace est pressée
+        if game.pressed.get(pygame.K_SPACE):
+            game.joueur.jump()
+        # Sauter si la touche Espace est pressée
 
     if game.pressed_down.get(pygame.K_e):
         #ouvrir le menu de craft
         game.crafting_interface_is_open = not game.crafting_interface_is_open
+        if game.crafting_interface_is_open:
+            game.interface_craft.update(game.joueur.body)
+        game.joueur.can_move = not game.crafting_interface_is_open
     if game.pressed_down.get(pygame.K_F1):
         #active le mode debug
         game.debug.debug_mode = not game.debug.debug_mode

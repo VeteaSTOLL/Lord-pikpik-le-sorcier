@@ -32,7 +32,8 @@ class item_list():
     def check_collision_and_add_item(self, body, coords):
         for item in self.items:
             if not item.collected:
-                for i in range(5):                    
+                
+                for i in range(5):
                     for j in range(5):
                         if body[i][j] != 0 and item.position == [coords[0] + j, coords[1] + i]:
                             self.item_collected.append(item)  

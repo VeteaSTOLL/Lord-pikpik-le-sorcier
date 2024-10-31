@@ -6,6 +6,7 @@ class joueur(pygame.sprite.Sprite):
         super().__init__()
         #déplacements
         self.speed = 300
+        self.can_move = True
 
         #saut
         self.t = 0 #le temps qu'on passe en l'air
