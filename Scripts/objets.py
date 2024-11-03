@@ -19,9 +19,7 @@ class item_list():
     def __init__(self):        
         self.items = []
 
-        self.items.append(item("roulette", "img/roulette.jpg", 12,13,1,1))
-        self.items.append(item("bouboule", "img/rond_noir.png", 14,13,1,1))
-        self.items.append(item("bouboule", "img/rond_noir.png", 16,13,1,1))
+        self.items.append(item("roulette", "img/roulette.jpg", 14,13,1,1))
         
         
     def draw_items(self, screen):
