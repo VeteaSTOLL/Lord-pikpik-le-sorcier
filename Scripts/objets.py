@@ -4,10 +4,12 @@ class item ():
     def __init__(self, name, image_path, x, y, dx, dy):
         self.name = name
         self.image = pygame.image.load(image_path)
-        self.image = pygame.transform.scale(self.image, (dx * 50, dy * 50))
-        self.position = [x,y]
-        self.size = [dx,dy]
-        self.rect = pygame.Rect(self.position[0] * 50, self.position[1] * 50, self.size[0] * 50, self.size[1] * 50)
+        self.image = pygame.transform.scale(self.image, (50,50))
+                
+        self.rect = pygame.Rect(x * 50, y * 50, dx * 50, dy * 50)
+        self.position = [x, y]
+
+
         self.collected = False
     
     def draw_item(self, screen):
@@ -19,7 +21,10 @@ class item_list():
     def __init__(self):        
         self.items = []
 
-        self.items.append(item("roulette", "img/roulette.jpg", 14,13,1,1))
+        self.items.append(item("roulette", "img/roulette.jpg", 6,9,1,1))
+        self.items.append(item("roulette", "img/roulette.jpg", 10,13,1,1))
+        self.items.append(item("botte", "img/botte.jpg", 4,13,1,1))
+        self.items.append(item("porte", "img/porte.jpg", 18,8,1,1))
         
         
     def draw_items(self, screen):
@@ -34,8 +39,9 @@ class item_list():
                     for j in range(5):
                         if body[i][j] != 0 and item.position == [coords[0] + j, coords[1] + i]:
                             item.collected = True
-                            
-                            print(item.name)
-            
+                        
+                            return item
     
+
+
 
