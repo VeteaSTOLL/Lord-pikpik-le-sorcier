@@ -38,30 +38,32 @@ while running:
         game.debug.draw_destination(game.joueur.destination, game.joueur.body, screen, (255,0,0))
         game.debug.draw_infos(screen, fps, game.joueur.destination)
 
-
+    
     if game.crafting_interface_is_open:
         #on affiche l'UI pour le craft du perso
         game.interface_craft.draw_crafting_interface(screen)
+
  
     pygame.display.flip()
 
 
     if game.joueur.can_move:
-        
+            
         # Appliquer la gravité au joueur
         game.joueur.apply_gravity(dt, game.collision_list)
 
         if abs(game.joueur.pos[0] - game.joueur.destination[0]*50) < game.joueur.speed * dt * 1.5:
             game.joueur.pos[0] = game.joueur.destination[0]*50
             if game.pressed.get(pygame.K_RIGHT) or game.pressed.get(pygame.K_d):
-                game.joueur.move(1, game.collision_list)
+                game.joueur.move(1, game.collision_list,game.crafting_interface_is_open)
             if game.pressed.get(pygame.K_LEFT) or game.pressed.get(pygame.K_q):
-                game.joueur.move(-1, game.collision_list)
+                game.joueur.move(-1, game.collision_list,game.crafting_interface_is_open)
         else:
             game.joueur.update_pos(dt)
 
+
         if game.pressed.get(pygame.K_SPACE):
-            game.joueur.jump()
+            game.joueur.jump(game.crafting_interface_is_open)
         # Sauter si la touche Espace est pressée
 
     if game.pressed.get("clic_souris"):        
@@ -82,7 +84,12 @@ while running:
         #active le mode debug
         game.debug.debug_mode = not game.debug.debug_mode
 
+    if game.item_list.check_collision_and_add_item(game.joueur.body, game.joueur.destination):
+            #il faut rajouter 1 au x du perso sinon maj pas bonne pour espace craft
+            game.crafting_interface_is_open = True 
+            print("Objet collecté, le crafting s'ouvre.")
 
+    #Je ne comprends pas pq quand on touche l'objet l'inventaire bug mais pas quand d'abords on touche l'inventaire puis on touche l'objet
 
     game.pressed_down = {}
     game.pressed_up = {}
