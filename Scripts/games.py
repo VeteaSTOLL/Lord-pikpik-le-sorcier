@@ -1,7 +1,3 @@
-import pygame
-from joueur import joueur
-from interface_craft import *
-from collisions import collision_list
 from objets import item_list
 from debug import *
 
@@ -21,4 +17,8 @@ class Game:
         
         self.collision_list = collision_list()
         self.item_list = item_list() 
-        self.interface_craft = Interface_Craft(screen.get_width(), screen.get_height())   
+        self.interface_craft = Interface_Craft(screen.get_width(), screen.get_height())    
+
+        self.screen = screen
+        
+        self.storage_case = stock_item_case(120, 150, 100, 100)
