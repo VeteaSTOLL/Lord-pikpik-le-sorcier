@@ -42,6 +42,7 @@ while running:
     if game.crafting_interface_is_open:
         #on affiche l'UI pour le craft du perso
         game.interface_craft.draw_crafting_interface(screen)
+        game.storage_case.draw(screen)
 
  
     pygame.display.flip()
@@ -86,8 +87,11 @@ while running:
 
     if game.item_list.check_collision_and_add_item(game.joueur.body, game.joueur.destination):
             #il faut rajouter 1 au x du perso sinon maj pas bonne pour espace craft
-            game.crafting_interface_is_open = True 
-            print("Objet collecté, le crafting s'ouvre.")
+        if game.item_list.item_collected:
+            image_path = game.item_list.item_collected[-1]  # Dernier item collecté
+            game.storage_case.update_stock_item_case(image_path)
+        game.crafting_interface_is_open = True 
+        
 
     #Je ne comprends pas pq quand on touche l'objet l'inventaire bug mais pas quand d'abords on touche l'inventaire puis on touche l'objet
 
@@ -112,3 +116,8 @@ while running:
         if event.type == pygame.MOUSEBUTTONUP:
             game.pressed["clic_souris"] = False
             game.pressed_up["clic_souris"] = True
+            
+    
+
+    # Dessiner et afficher les cases
+    game.storage_case.draw(screen)
