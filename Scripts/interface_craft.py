@@ -21,6 +21,29 @@ class case():
         self.width = width
         self.height = height
 
+    def update(self, body, coordimport pygame
+
+class case():
+    def __init__(self, i, j, x, y, width, height):
+        self.rect = pygame.Rect(x,y,width,height)
+
+        
+        self.body_color = (0,0,0)
+        self.void_color = (255,255,255)
+        self.collision_color = (200,150,150)
+
+        self.color = self.void_color
+
+        self.element = 0
+        self.in_collision = False
+
+        self.i = i
+        self.j = j
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+
     def update(self, body, coords, collision_list):
         self.element = body[self.j][self.i]
         self.in_collision = collision_list.check_collision((coords[0] + self.i, coords[1] + self.j))
@@ -152,6 +175,14 @@ class Interface_Craft():
         for t in self.tools:
             t.draw(screen)
 
+                
+    def event(self, event):
+        # Passe 'self' comme tool_manager lors de l'appel de `event()` dans les cases
+        for case in self.cases:
+            case.event(event, self)
+        for tool_item in self.tools:
+            tool_item.event(event, self)
+    
     def update(self, body, coords, collision_list):
         for ligne in self.cases:
             for case in ligne:
@@ -171,5 +202,24 @@ class Interface_Craft():
                     t2.select(False)
                 t.select(True)
                 self.selected_tool = t.name 
+    
 
+
+class stock_item_case:
+    def __init__(self, x, y, width, height):
+        self.rect = pygame.Rect(x, y, width, height)
+        self.image = None
+        self.stock_item_case_name = None
+        self.drag = False 
+        self.mouse_offset = (0, 0) 
+
+    def update_stock_item_case(self, image_path):
+        self.image = pygame.image.load(image_path)
+        self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height))
+        
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, (150, 150, 150), self.rect)
+        if self.image:
+            screen.blit(self.image, self.rect)
             
