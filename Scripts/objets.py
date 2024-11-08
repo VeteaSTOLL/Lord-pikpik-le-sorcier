@@ -44,3 +44,5 @@ class item_list():
                             #///////////////
                             self.item_collected.append(item.image_path)
                             return item
+    
+

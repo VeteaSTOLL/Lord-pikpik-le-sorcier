@@ -74,19 +74,19 @@ while running:
     if game.pressed_down.get(pygame.K_e):
         #ouvrir ou fermer le menu de craft
         if game.crafting_interface_is_open:
-            #vérifier la former du perso avant de fermer
+            #vérifier la former du perso avant de fermer            
+            game.joueur.can_move = True
             game.crafting_interface_is_open = False
         else:
             game.interface_craft.update(game.joueur.body, game.joueur.destination, game.collision_list)
-            game.joueur.can_move = not game.crafting_interface_is_open
+            game.joueur.can_move = False           
             game.crafting_interface_is_open = True
-
+    
     if game.pressed_down.get(pygame.K_F1):
         #active le mode debug
         game.debug.debug_mode = not game.debug.debug_mode
 
     if game.item_list.check_collision_and_add_item(game.joueur.body, game.joueur.destination):
-            #il faut rajouter 1 au x du perso sinon maj pas bonne pour espace craft
         if game.item_list.item_collected:
             image_path = game.item_list.item_collected[-1]  # Dernier item collecté
             game.storage_case.update_stock_item_case(image_path)

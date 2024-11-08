@@ -21,29 +21,6 @@ class case():
         self.width = width
         self.height = height
 
-    def update(self, body, coordimport pygame
-
-class case():
-    def __init__(self, i, j, x, y, width, height):
-        self.rect = pygame.Rect(x,y,width,height)
-
-        
-        self.body_color = (0,0,0)
-        self.void_color = (255,255,255)
-        self.collision_color = (200,150,150)
-
-        self.color = self.void_color
-
-        self.element = 0
-        self.in_collision = False
-
-        self.i = i
-        self.j = j
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-
     def update(self, body, coords, collision_list):
         self.element = body[self.j][self.i]
         self.in_collision = collision_list.check_collision((coords[0] + self.i, coords[1] + self.j))
@@ -205,7 +182,7 @@ class Interface_Craft():
     
 
 
-class stock_item_case:
+class stock_item_case():
     def __init__(self, x, y, width, height):
         self.rect = pygame.Rect(x, y, width, height)
         self.image = None
@@ -222,4 +199,6 @@ class stock_item_case:
         pygame.draw.rect(screen, (150, 150, 150), self.rect)
         if self.image:
             screen.blit(self.image, self.rect)
-            
+
+
+

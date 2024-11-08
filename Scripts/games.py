@@ -1,3 +1,7 @@
+import pygame
+from joueur import joueur
+from interface_craft import *
+from collisions import collision_list
 from objets import item_list
 from debug import *
 
