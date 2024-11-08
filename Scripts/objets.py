@@ -3,6 +3,7 @@ import pygame
 class item ():
     def __init__(self, name, image_path, x, y, dx, dy):
         self.name = name
+        self.image_path=image_path
         self.image = pygame.image.load(image_path)
         self.image = pygame.transform.scale(self.image, (50,50))
                 
@@ -20,6 +21,7 @@ class item ():
 class item_list():
     def __init__(self):        
         self.items = []
+        self.item_collected=[]
 
         self.items.append(item("roulette", "img/roulette.jpg", 6,9,1,1))
         self.items.append(item("roulette", "img/roulette.jpg", 10,13,1,1))
@@ -39,9 +41,6 @@ class item_list():
                     for j in range(5):
                         if body[i][j] != 0 and item.position == [coords[0] + j, coords[1] + i]:
                             item.collected = True
-                        
+                            #///////////////
+                            self.item_collected.append(item.image_path)
                             return item
-    
-
-
-
