@@ -42,7 +42,7 @@ class item_list():
                         if body[i][j] != 0 and item.position == [coords[0] + j, coords[1] + i]:
                             item.collected = True
                             #///////////////
-                            self.item_collected.append(item.image_path)
+                            self.item_collected.append(item)
                             return item
     
 

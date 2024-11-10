@@ -7,6 +7,16 @@ class debug():
         self.debug_mode = False
 
         self.font = pygame.font.SysFont('arial', 30)
+        self.grid_color = (255,0,0)
+        self.grid_size = 50
+        self.circle_color = (255,0,0)
+
+
+    def draw(self, screen, body, pos, fps):        
+        self.draw_grid(screen, self.grid_color, self.grid_size)
+        self.draw_destination(pos, body, screen, self.circle_color)
+        self.draw_infos(screen, fps, pos)
+
 
     def draw_grid(self, screen, line_color, grid_size):
         for i in range(screen.get_width()//grid_size + 1):

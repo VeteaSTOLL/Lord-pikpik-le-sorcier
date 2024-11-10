@@ -35,12 +35,9 @@ class joueur(pygame.sprite.Sprite):
         self.pos = [0,0] #[400.0, 650.0]
         self.destination = [0,0] #[8,13]
 
-    def move(self, direction, collision_list,crafting_interface_is_open ):
-        if crafting_interface_is_open:
-            return
-        else:
-            if not collision_list.check_collision_player((self.destination[0]+direction, self.destination[1]), self.body):
-                self.destination[0] += direction
+    def move(self, direction, collision_list):
+        if not collision_list.check_collision_player((self.destination[0]+direction, self.destination[1]), self.body):
+            self.destination[0] += direction
     
     def update_pos(self, dt):        
         direction = (self.destination[0]*50 - self.pos[0] > 0) * 2 - 1
@@ -72,13 +69,10 @@ class joueur(pygame.sprite.Sprite):
         self.destination[1] = self.pos[1] // 50 #on update destination pour les autres scripts
         
 
-    def jump(self,crafting_interface_is_open):
+    def jump(self):
         #Fait sauter le joueur s'il n'est pas déjà en train de sauter.
-        if crafting_interface_is_open:
-            return
-        else:
-            if not self.is_jumping:
-                self.is_jumping = True
+        if not self.is_jumping:
+            self.is_jumping = True
     
     def draw(self, screen):
         for i in range(5):

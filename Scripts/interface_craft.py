@@ -49,18 +49,6 @@ class case():
         
         self.update_color()
 
-    # @staticmethod
-    # def check_neighboring_body_parts(body, i, j):
-    #     if i > 0 and body[j][i-1] == 1:
-    #         return True
-    #     if i < len(body)-1 and body[j][i+1] == 1:
-    #         return True
-    #     if j > 0 and body[j-1][i] == 1:
-    #         return True
-    #     if j < len(body[0])-1 and body[j+1][i] == 1:
-    #         return True
-    #     return False
-    
 
 
 class tool():
@@ -102,6 +90,8 @@ class tool():
 
 class Interface_Craft():
     def __init__(self, screen_width, screen_height):
+        self.is_open = False
+
         self.base_width = 800
         self.base_height = 600
         self.base_color = (200, 200, 200)
@@ -136,7 +126,18 @@ class Interface_Craft():
         self.tools.append(tool("gomme",self.tool_offset[0], self.tool_offset[1] + self.tool_height + self.space, self.tool_width, self.tool_height, False,"img/gomme.png"))
 
         self.selected_tool = "pinceau"
+        
+        self.storage_case = stock_item_case(120, 150, 100, 100)
 
+    def open(self, joueur, collision_list):        
+        self.update(joueur.body, joueur.destination, collision_list)
+        joueur.can_move = False           
+        self.is_open = True
+    
+    def close(self, joueur):
+        #vérifier la former du perso avant de fermer            
+        joueur.can_move = True
+        self.is_open = False
 
     def draw_crafting_interface(self, screen):
         base = pygame.Rect(self.base_offset[0], self.base_offset[1], self.base_width, self.base_height)
@@ -152,6 +153,7 @@ class Interface_Craft():
         for t in self.tools:
             t.draw(screen)
 
+        self.storage_case.draw(screen)
                 
     def event(self, event):
         # Passe 'self' comme tool_manager lors de l'appel de `event()` dans les cases
@@ -185,13 +187,14 @@ class Interface_Craft():
 class stock_item_case():
     def __init__(self, x, y, width, height):
         self.rect = pygame.Rect(x, y, width, height)
+        self.item_stored = None
         self.image = None
-        self.stock_item_case_name = None
         self.drag = False 
         self.mouse_offset = (0, 0) 
 
-    def update_stock_item_case(self, image_path):
-        self.image = pygame.image.load(image_path)
+    def update_stock_item_case(self, item):
+        self.item_stored = item
+        self.image = pygame.image.load(item.image_path)
         self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height))
         
 

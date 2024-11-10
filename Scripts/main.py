@@ -24,7 +24,7 @@ while running:
         dt = 1 / fps    
 
     #affichage
-    screen .fill((255,255,255))
+    screen.fill((255,255,255))
     
     game.collision_list.draw_collisions(screen)
     
@@ -34,15 +34,12 @@ while running:
     game.joueur.draw(screen)
 
     if game.debug.debug_mode:
-        game.debug.draw_grid(screen, (255,0,0), 50)
-        game.debug.draw_destination(game.joueur.destination, game.joueur.body, screen, (255,0,0))
-        game.debug.draw_infos(screen, fps, game.joueur.destination)
+        game.debug.draw(screen, game.joueur.body, game.joueur.destination, fps)
 
     
-    if game.crafting_interface_is_open:
+    if game.interface_craft.is_open:
         #on affiche l'UI pour le craft du perso
         game.interface_craft.draw_crafting_interface(screen)
-        game.storage_case.draw(screen)
 
  
     pygame.display.flip()
@@ -56,44 +53,36 @@ while running:
         if abs(game.joueur.pos[0] - game.joueur.destination[0]*50) < game.joueur.speed * dt * 1.5:
             game.joueur.pos[0] = game.joueur.destination[0]*50
             if game.pressed.get(pygame.K_RIGHT) or game.pressed.get(pygame.K_d):
-                game.joueur.move(1, game.collision_list,game.crafting_interface_is_open)
+                game.joueur.move(1, game.collision_list)
             if game.pressed.get(pygame.K_LEFT) or game.pressed.get(pygame.K_q):
-                game.joueur.move(-1, game.collision_list,game.crafting_interface_is_open)
+                game.joueur.move(-1, game.collision_list)
         else:
             game.joueur.update_pos(dt)
 
 
         if game.pressed.get(pygame.K_SPACE):
-            game.joueur.jump(game.crafting_interface_is_open)
+            game.joueur.jump()
         # Sauter si la touche Espace est pressée
 
     if game.pressed.get("clic_souris"):        
-        if game.crafting_interface_is_open:
+        if game.interface_craft.is_open:
             game.interface_craft.click(pygame.mouse.get_pos(), game.joueur.body)
 
     if game.pressed_down.get(pygame.K_e):
         #ouvrir ou fermer le menu de craft
-        if game.crafting_interface_is_open:
-            #vérifier la former du perso avant de fermer            
-            game.joueur.can_move = True
-            game.crafting_interface_is_open = False
+        if game.interface_craft.is_open:
+            game.interface_craft.close(game.joueur)
         else:
-            game.interface_craft.update(game.joueur.body, game.joueur.destination, game.collision_list)
-            game.joueur.can_move = False           
-            game.crafting_interface_is_open = True
+            game.interface_craft.open(game.joueur, game.collision_list)
     
     if game.pressed_down.get(pygame.K_F1):
         #active le mode debug
         game.debug.debug_mode = not game.debug.debug_mode
 
     if game.item_list.check_collision_and_add_item(game.joueur.body, game.joueur.destination):
-        if game.item_list.item_collected:
-            image_path = game.item_list.item_collected[-1]  # Dernier item collecté
-            game.storage_case.update_stock_item_case(image_path)
-        game.crafting_interface_is_open = True 
-        
-
-    #Je ne comprends pas pq quand on touche l'objet l'inventaire bug mais pas quand d'abords on touche l'inventaire puis on touche l'objet
+        item = game.item_list.item_collected[-1]  # Dernier item collecté
+        game.interface_craft.storage_case.update_stock_item_case(item)
+        game.interface_craft.open(game.joueur, game.collision_list)
 
     game.pressed_down = {}
     game.pressed_up = {}
@@ -110,14 +99,10 @@ while running:
         if event.type == pygame.KEYUP:
             game.pressed[event.key] = False
             game.pressed_up[event.key] = True
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             game.pressed["clic_souris"] = True
             game.pressed_down["clic_souris"] = True
         if event.type == pygame.MOUSEBUTTONUP:
             game.pressed["clic_souris"] = False
             game.pressed_up["clic_souris"] = True
-            
-    
-
-    # Dessiner et afficher les cases
-    game.storage_case.draw(screen)
