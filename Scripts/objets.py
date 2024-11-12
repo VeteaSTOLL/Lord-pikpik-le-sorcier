@@ -1,15 +1,15 @@
 import pygame 
 
 class item ():
-    def __init__(self, name, image_path, x, y, dx, dy):
+    def __init__(self, name, id, image_path, x, y, dx, dy):
         self.name = name
+        self.id = id
         self.image_path=image_path
         self.image = pygame.image.load(image_path)
         self.image = pygame.transform.scale(self.image, (50,50))
                 
         self.rect = pygame.Rect(x * 50, y * 50, dx * 50, dy * 50)
         self.position = [x, y]
-
 
         self.collected = False
     
@@ -23,10 +23,10 @@ class item_list():
         self.items = []
         self.item_collected=[]
 
-        self.items.append(item("roulette", "img/roulette.jpg", 6,9,1,1))
-        self.items.append(item("roulette", "img/roulette.jpg", 10,13,1,1))
-        self.items.append(item("botte", "img/botte.jpg", 4,13,1,1))
-        self.items.append(item("porte", "img/porte.jpg", 18,8,1,1))
+        self.items.append(item("roulette", 2, "img/roulette.jpg", 6,9,1,1))
+        self.items.append(item("roulette", 2, "img/roulette.jpg", 10,13,1,1))
+        self.items.append(item("botte", 3, "img/botte.jpg", 4,13,1,1))
+        self.items.append(item("porte", 4, "img/porte.jpg", 18,8,1,1))
         
         
     def draw_items(self, screen):

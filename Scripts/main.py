@@ -64,9 +64,17 @@ while running:
             game.joueur.jump()
         # Sauter si la touche Espace est pressée
 
-    if game.pressed.get("clic_souris"):        
+    if game.pressed.get("clic_souris"):
         if game.interface_craft.is_open:
             game.interface_craft.click(pygame.mouse.get_pos(), game.joueur.body)
+
+    if game.pressed_down.get("clic_souris"):
+        if game.interface_craft.is_open:
+            game.interface_craft.click_down(pygame.mouse.get_pos())
+
+    if game.pressed_up.get("clic_souris"):
+        if game.interface_craft.is_open:
+            game.interface_craft.click_up(pygame.mouse.get_pos(), game.joueur.body)
 
     if game.pressed_down.get(pygame.K_e):
         #ouvrir ou fermer le menu de craft

@@ -14,8 +14,8 @@ class collision_list():
         self.collisions = []
 
         self.collisions.append(collision(5,10,3,4))
-        self.collisions.append(collision(0,14,13,1))
-        self.collisions.append(collision(15,14,20,1))
+        self.collisions.append(collision(0,14,13,2))
+        self.collisions.append(collision(15,14,20,2))
         self.collisions.append(collision(17,9,3,5))
 
     def draw_collisions(self, screen):
