@@ -39,8 +39,10 @@ class case():
         self.object_color = (200,250,200)
         self.void_color = (255,255,255)
         self.collision_color = (200,150,150)
+        self.error_color = (255,0,255)
 
         self.pannel = pannel(x, y, width, height, self.void_color)
+        self.drag_and_drop = drag_and_drop(x, y, width, height)
 
         self.element = 0
         self.in_collision = False
@@ -53,15 +55,17 @@ class case():
         self.in_collision = collision_list.check_collision((coords[0] + self.i, coords[1] + self.j))
         self.update_color()
 
-    def update_color(self):        
+    def update_color(self):
         if self.in_collision:
             self.pannel.color = self.collision_color
         elif self.element == 0:
             self.pannel.color = self.void_color
         elif self.element == 1:
             self.pannel.color = self.body_color
-        else:
+        elif self.drag_and_drop.item != None:
             self.pannel.color = self.object_color
+        else :
+            self.pannel.color = self.error_color
 
     def paint(self, body, set):
         if set:
@@ -76,7 +80,6 @@ class case():
             self.element = element
             body[self.j][self.i] = self.element
             self.update_color()
-            return True
         
     def draw(self, screen):
         self.pannel.draw(screen)
@@ -114,33 +117,49 @@ class tool():
 
 class stock_item_case():
     def __init__(self, x, y, width, height):
-        self.item_stored = None
-
-        self.image = None
         self.pannel = pannel(x, y, width, height, (150, 150, 150))
-        self.image_rect = self.pannel.rect.copy()
-
-    def update_stock_item_case(self, item):
-        self.item_stored = item
-        self.image = pygame.image.load(item.image_path)
-        self.image = pygame.transform.scale(self.image, (self.pannel.width, self.pannel.height))
-        
-    def set_image_coords(self, x, y):        
-        self.image_rect.x = x
-        self.image_rect.y = y
-    
-    def reset_image_coords(self):
-        self.image_rect = self.pannel.rect.copy()
-
-    def clear(self):
-        self.item_stored = None
-        self.image = None
-        self.reset_image_coords()
+        self.drag_and_drop = drag_and_drop(x, y, width, height)
 
     def draw(self, screen):
         self.pannel.draw(screen)
+        self.drag_and_drop.draw(screen)
+
+    def reset_drag_and_drop_coords(self):
+        self.drag_and_drop.x = self.pannel.x
+        self.drag_and_drop.y = self.pannel.y
+        self.drag_and_drop.reset_image_coords()
+
+class drag_and_drop():
+    def __init__(self, x, y, width, height):
+        self.item = None
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.rect = pygame.Rect(x,y,width,height)
+        self.image = None
+
+    def set_item(self, item):
+        self.item = item
+        self.image = pygame.image.load(item.image_path)
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+
+    def set_image_coords(self, x, y):        
+        self.rect.x = x
+        self.rect.y = y
+        
+    def clear(self):
+        self.item = None
+        self.image = None
+        self.reset_image_coords()
+    
+    def reset_image_coords(self):
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+    def draw(self, screen):
         if self.image:
-            screen.blit(self.image, self.image_rect)
+            screen.blit(self.image, self.rect)
 
 
 class Interface_Craft():
@@ -180,9 +199,10 @@ class Interface_Craft():
         
         self.storage_case = stock_item_case(0, 0, 100, 100)
         self.storage_case.pannel.center(self.craft.x+self.craft.width, self.base.y, (self.base.width-self.craft.width)/2, self.base.height)
-        self.storage_case.reset_image_coords()
+        self.storage_case.reset_drag_and_drop_coords()
 
         self.holded_item = None
+        self.item_origin = None
 
     def open(self, joueur, collision_list):        
         self.update(joueur.body, joueur.destination, collision_list)
@@ -206,6 +226,10 @@ class Interface_Craft():
             t.draw(screen)
 
         self.storage_case.draw(screen)
+        
+        for ligne in self.cases:
+            for case in ligne:
+                case.drag_and_drop.draw(screen)
                 
     def event(self, event):
         # Passe 'self' comme tool_manager lors de l'appel de `event()` dans les cases
@@ -219,9 +243,13 @@ class Interface_Craft():
             for case in ligne:
                 case.update(body, coords, collision_list)
 
+    def take_item(self, drag_and_drop):
+        self.holded_item = drag_and_drop.item
+        self.item_origin = drag_and_drop
+
     def click(self, mouse_pos, body):
-        if self.holded_item:
-            self.storage_case.set_image_coords(mouse_pos[0] - 50, mouse_pos[1] - 50)
+        if self.holded_item != None:
+            self.item_origin.set_image_coords(mouse_pos[0] - 50, mouse_pos[1] - 50)
         else:
             for ligne in self.cases:
                 for case in ligne:
@@ -236,17 +264,29 @@ class Interface_Craft():
                     t.select(True)
                     self.selected_tool = t.name
         
-    def click_down(self, mouse_pos): 
+    def click_down(self, mouse_pos):
         if self.storage_case.pannel.contain(mouse_pos):
-            self.holded_item = self.storage_case.item_stored
+            self.take_item(self.storage_case.drag_and_drop)
 
-    def click_up(self, mouse_pos, body):
+        for ligne in self.cases:
+            for case in ligne:
+                if case.pannel.contain(mouse_pos) and case.drag_and_drop.item != None:
+                    self.take_item(case.drag_and_drop)
+
+
+    def click_up(self, mouse_pos):
         if self.holded_item:
             for ligne in self.cases:
                 for case in ligne:
-                    if case.pannel.contain(mouse_pos) and case.element == 0:
-                        if case.set_element(body, self.holded_item.id):
-                            self.storage_case.clear()
+                    if case.pannel.contain(mouse_pos) and not case.in_collision and case.element == 0:
+                        self.item_origin.clear()
+                        case.drag_and_drop.set_item(self.holded_item)
+                        case.update_color()
 
-        self.holded_item = None
-        self.storage_case.reset_image_coords()
+            self.item_origin.reset_image_coords()
+            self.holded_item = None
+            self.item_origin = None
+
+            for ligne in self.cases:
+                for case in ligne:
+                    case.update_color()
