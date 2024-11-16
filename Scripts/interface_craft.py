@@ -50,7 +50,7 @@ class case():
         self.i = i
         self.j = j
 
-    def update(self, body, coords, collision_list):
+    def update_collision_detection(self, body, coords, collision_list):
         self.element = body[self.j][self.i]
         self.in_collision = collision_list.check_collision((coords[0] + self.i, coords[1] + self.j))
         self.update_color()
@@ -62,10 +62,17 @@ class case():
             self.pannel.color = self.void_color
         elif self.element == 1:
             self.pannel.color = self.body_color
-        elif self.drag_and_drop.item != None:
+        elif self.element >= 2:
             self.pannel.color = self.object_color
         else :
             self.pannel.color = self.error_color
+
+    def update_element(self, body):
+        if self.drag_and_drop.item == None:
+            if self.element >= 2:
+                self.set_element(body, 0)
+        else:
+            self.set_element(body, self.drag_and_drop.item.id)
 
     def paint(self, body, set):
         if set:
@@ -140,9 +147,10 @@ class drag_and_drop():
         self.image = None
 
     def set_item(self, item):
-        self.item = item
-        self.image = pygame.image.load(item.image_path)
-        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+        if item != None:
+            self.item = item
+            self.image = pygame.image.load(item.image_path)
+            self.image = pygame.transform.scale(self.image, (self.width, self.height))
 
     def set_image_coords(self, x, y):        
         self.rect.x = x
@@ -201,18 +209,28 @@ class Interface_Craft():
         self.storage_case.pannel.center(self.craft.x+self.craft.width, self.base.y, (self.base.width-self.craft.width)/2, self.base.height)
         self.storage_case.reset_drag_and_drop_coords()
 
+        self.object = None
+
         self.holded_item = None
         self.item_origin = None
 
-    def open(self, joueur, collision_list):        
+    def open(self, joueur, collision_list, object=None):        
         self.update(joueur.body, joueur.destination, collision_list)
+        if object != None:
+            self.storage_case.drag_and_drop.set_item(object.item)
+            self.object = object
         joueur.can_move = False           
         self.is_open = True
     
     def close(self, joueur):
-        #vérifier la former du perso avant de fermer            
+        #vérifier la former du perso avant de fermer
         joueur.can_move = True
         self.is_open = False
+        if self.object != None and self.storage_case.drag_and_drop.item == None:
+            self.object.collect()
+        
+        self.object = None
+        self.storage_case.drag_and_drop.clear()
 
     def draw_crafting_interface(self, screen):
         self.base.draw(screen)        
@@ -230,18 +248,11 @@ class Interface_Craft():
         for ligne in self.cases:
             for case in ligne:
                 case.drag_and_drop.draw(screen)
-                
-    def event(self, event):
-        # Passe 'self' comme tool_manager lors de l'appel de `event()` dans les cases
-        for case in self.cases:
-            case.event(event, self)
-        for tool_item in self.tools:
-            tool_item.event(event, self)
     
     def update(self, body, coords, collision_list):
         for ligne in self.cases:
             for case in ligne:
-                case.update(body, coords, collision_list)
+                case.update_collision_detection(body, coords, collision_list)
 
     def take_item(self, drag_and_drop):
         self.holded_item = drag_and_drop.item
@@ -274,14 +285,19 @@ class Interface_Craft():
                     self.take_item(case.drag_and_drop)
 
 
-    def click_up(self, mouse_pos):
+    def click_up(self, mouse_pos, body):
         if self.holded_item:
-            for ligne in self.cases:
-                for case in ligne:
-                    if case.pannel.contain(mouse_pos) and not case.in_collision and case.element == 0:
-                        self.item_origin.clear()
-                        case.drag_and_drop.set_item(self.holded_item)
-                        case.update_color()
+
+            if self.storage_case.pannel.contain(mouse_pos) and self.object != None:
+                self.item_origin.clear()
+                self.storage_case.drag_and_drop.set_item(self.holded_item)
+            else:
+                for ligne in self.cases:
+                    for case in ligne:
+                        if case.pannel.contain(mouse_pos) and not case.in_collision and case.element == 0:
+                            self.item_origin.clear()
+                            case.drag_and_drop.set_item(self.holded_item)
+            
 
             self.item_origin.reset_image_coords()
             self.holded_item = None
@@ -289,4 +305,4 @@ class Interface_Craft():
 
             for ligne in self.cases:
                 for case in ligne:
-                    case.update_color()
+                    case.update_element(body)

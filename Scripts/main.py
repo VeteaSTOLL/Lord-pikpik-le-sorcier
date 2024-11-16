@@ -28,10 +28,9 @@ while running:
     
     game.collision_list.draw_collisions(screen)
     
-    game.item_list.check_collision_and_add_item(game.joueur.body, game.joueur.destination)
-    game.item_list.draw_items(screen)
+    game.item_manager.draw_objects(screen)
 
-    game.joueur.draw(screen)
+    game.joueur.draw(screen, game.item_manager.item_types)
 
     if game.debug.debug_mode:
         game.debug.draw(screen, game.joueur.body, game.joueur.destination, fps)
@@ -50,12 +49,21 @@ while running:
         # Appliquer la gravité au joueur
         game.joueur.apply_gravity(dt, game.collision_list)
 
-        if abs(game.joueur.pos[0] - game.joueur.destination[0]*50) < game.joueur.speed * dt * 1.5:
-            game.joueur.pos[0] = game.joueur.destination[0]*50
+        if game.joueur.pos[0] == game.joueur.destination[0]*50:
+
             if game.pressed.get(pygame.K_RIGHT) or game.pressed.get(pygame.K_d):
                 game.joueur.move(1, game.collision_list)
-            if game.pressed.get(pygame.K_LEFT) or game.pressed.get(pygame.K_q):
+            elif game.pressed.get(pygame.K_LEFT) or game.pressed.get(pygame.K_q):
                 game.joueur.move(-1, game.collision_list)
+
+        elif abs(game.joueur.pos[0] - game.joueur.destination[0]*50) < game.joueur.speed * dt * 1.5:
+
+            if game.pressed.get(pygame.K_RIGHT) or game.pressed.get(pygame.K_d):
+                game.joueur.move(1, game.collision_list)
+            elif game.pressed.get(pygame.K_LEFT) or game.pressed.get(pygame.K_q):
+                game.joueur.move(-1, game.collision_list)
+            else:                
+                game.joueur.pos[0] = game.joueur.destination[0]*50                
         else:
             game.joueur.update_pos(dt)
 
@@ -72,23 +80,19 @@ while running:
             game.interface_craft.click(pygame.mouse.get_pos(), game.joueur.body)
     if game.pressed_up.get("clic_souris"):
         if game.interface_craft.is_open:
-            game.interface_craft.click_up(pygame.mouse.get_pos())
+            game.interface_craft.click_up(pygame.mouse.get_pos(), game.joueur.body)
 
     if game.pressed_down.get(pygame.K_e):
         #ouvrir ou fermer le menu de craft
         if game.interface_craft.is_open:
             game.interface_craft.close(game.joueur)
-        else:
-            game.interface_craft.open(game.joueur, game.collision_list)
+        else:            
+            object = game.item_manager.check_collision(game.joueur.body, game.joueur.destination)
+            game.interface_craft.open(game.joueur, game.collision_list, object)
     
     if game.pressed_down.get(pygame.K_F1):
         #active le mode debug
-        game.debug.debug_mode = not game.debug.debug_mode
-
-    if game.item_list.check_collision_and_add_item(game.joueur.body, game.joueur.destination):
-        item = game.item_list.item_collected[-1]  # Dernier item collecté
-        game.interface_craft.storage_case.drag_and_drop.set_item(item)
-        game.interface_craft.open(game.joueur, game.collision_list)
+        game.debug.debug_mode = not game.debug.debug_mode    
 
     game.pressed_down = {}
     game.pressed_up = {}

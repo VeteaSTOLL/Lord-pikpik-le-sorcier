@@ -74,8 +74,11 @@ class joueur(pygame.sprite.Sprite):
         if not self.is_jumping:
             self.is_jumping = True
     
-    def draw(self, screen):
+    def draw(self, screen, item_types):
         for i in range(5):
             for j in range(5):
-                if self.body[i][j] != 0:
+                bodypart = self.body[i][j]
+                if bodypart == 1:
                     screen.blit(self.image, pygame.Rect(self.pos[0] + 50 * j, self.pos[1] + 50 * i, 50, 50))
+                elif bodypart >= 2:
+                    screen.blit(item_types[bodypart-2].image, pygame.Rect(self.pos[0] + 50 * j, self.pos[1] + 50 * i, 50, 50))

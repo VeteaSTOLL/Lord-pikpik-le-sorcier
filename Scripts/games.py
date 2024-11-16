@@ -2,7 +2,7 @@ import pygame
 from joueur import joueur
 from interface_craft import *
 from collisions import collision_list
-from objets import item_list
+from objets import item_manager
 from debug import *
 
 
@@ -18,6 +18,6 @@ class Game:
         self.pressed_up = {}
         
         self.collision_list = collision_list()
-        self.item_list = item_list() 
+        self.item_manager = item_manager() 
         self.interface_craft = Interface_Craft(screen.get_width(), screen.get_height())
         
