@@ -7,6 +7,7 @@ class joueur(pygame.sprite.Sprite):
         #déplacements
         self.speed = 300
         self.can_move = True
+        self.can_jump = False
 
         #saut
         self.t = 0 #le temps qu'on passe en l'air
@@ -32,7 +33,7 @@ class joueur(pygame.sprite.Sprite):
 
         #coordonnées
 
-        self.pos = [0,0] #[400.0, 650.0]
+        self.pos = [1*50,11*50] #[400.0, 650.0]
         self.destination = [0,0] #[8,13]
 
     def move(self, direction, collision_list):
@@ -82,3 +83,28 @@ class joueur(pygame.sprite.Sprite):
                     screen.blit(self.image, pygame.Rect(self.pos[0] + 50 * j, self.pos[1] + 50 * i, 50, 50))
                 elif bodypart >= 2:
                     screen.blit(item_types[bodypart-2].image, pygame.Rect(self.pos[0] + 50 * j, self.pos[1] + 50 * i, 50, 50))
+    
+    def check_body(self):
+        nb_1 = 0 
+        nb_i = 0
+        for i in range(5):
+            for j in range(5):
+                
+                if self.body[i][j] == 1:
+                    nb_1 += 1
+                if self.body[i][j] != 0 and self.body[i][j] != 1:
+                    nb_i += 1
+                    
+                if nb_1 == 1: 
+                    self.can_move = True
+                elif nb_1 != 1 and nb_i == 0:
+                    self.can_move = False
+                    
+                
+                if self.body[i-1][j] == 1:
+                    if self.body[i][j] == 3:  
+                        self.can_jump = True
+                        self.can_move = True
+                    if self.body[i][j] == 2: 
+                        self.can_move = True 
+                    

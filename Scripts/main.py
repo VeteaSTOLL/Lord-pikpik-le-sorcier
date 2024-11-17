@@ -48,6 +48,7 @@ while running:
             
         # Appliquer la gravité au joueur
         game.joueur.apply_gravity(dt, game.collision_list)
+        game.joueur.check_body()
 
         if game.joueur.pos[0] == game.joueur.destination[0]*50:
 
@@ -67,9 +68,17 @@ while running:
         else:
             game.joueur.update_pos(dt)
 
+        if game.item_manager.check_collision(game.joueur.body, game.joueur.destination)!= None:
+            if game.interface_craft.is_open:
+                game.interface_craft.close(game.joueur)
+            else:            
+                object = game.item_manager.check_collision(game.joueur.body, game.joueur.destination)
+                game.interface_craft.open(game.joueur, game.collision_list, object)
+                
 
         if game.pressed.get(pygame.K_SPACE):
-            game.joueur.jump()
+            if game.joueur.can_jump:
+                game.joueur.jump()
         # Sauter si la touche Espace est pressée
 
     if game.pressed_down.get("clic_souris"):
@@ -116,3 +125,5 @@ while running:
         if event.type == pygame.MOUSEBUTTONUP:
             game.pressed["clic_souris"] = False
             game.pressed_up["clic_souris"] = True
+        
+        
