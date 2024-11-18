@@ -23,58 +23,35 @@ while running:
     if fps != 0 :
         dt = 1 / fps    
 
-    #affichage
-    screen.fill((255,255,255))
+    game.pressed_down = {}
+    game.pressed_up = {}
     
-    game.collision_list.draw_collisions(screen)
-    
-    game.item_manager.draw_objects(screen)
+    for event in pygame.event.get():
+        #si le joueur ferme la fenetre
+        if event.type == pygame.QUIT:
+           running = False 
+           pygame.quit() 
 
-    game.joueur.draw(screen, game.item_manager.item_types)
+        if event.type == pygame.KEYDOWN:
+            game.pressed[event.key] = True
+            game.pressed_down[event.key] = True
+        if event.type == pygame.KEYUP:
+            game.pressed[event.key] = False
+            game.pressed_up[event.key] = True
 
-    if game.debug.debug_mode:
-        game.debug.draw(screen, game.joueur.body, game.joueur.destination, fps)
-
-    
-    if game.interface_craft.is_open:
-        #on affiche l'UI pour le craft du perso
-        game.interface_craft.draw_crafting_interface(screen)
-
- 
-    pygame.display.flip()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            game.pressed["clic_souris"] = True
+            game.pressed_down["clic_souris"] = True
+        if event.type == pygame.MOUSEBUTTONUP:
+            game.pressed["clic_souris"] = False
+            game.pressed_up["clic_souris"] = True
 
 
-    if game.joueur.can_move:
-            
+    if game.joueur.can_move:            
         # Appliquer la gravité au joueur
         game.joueur.apply_gravity(dt, game.collision_list)
         game.joueur.check_body()
-
-        if game.joueur.pos[0] == game.joueur.destination[0]*50:
-
-            if game.pressed.get(pygame.K_RIGHT) or game.pressed.get(pygame.K_d):
-                game.joueur.move(1, game.collision_list)
-            elif game.pressed.get(pygame.K_LEFT) or game.pressed.get(pygame.K_q):
-                game.joueur.move(-1, game.collision_list)
-
-        elif abs(game.joueur.pos[0] - game.joueur.destination[0]*50) < game.joueur.speed * dt * 1.5:
-
-            if game.pressed.get(pygame.K_RIGHT) or game.pressed.get(pygame.K_d):
-                game.joueur.move(1, game.collision_list)
-            elif game.pressed.get(pygame.K_LEFT) or game.pressed.get(pygame.K_q):
-                game.joueur.move(-1, game.collision_list)
-            else:                
-                game.joueur.pos[0] = game.joueur.destination[0]*50                
-        else:
-            game.joueur.update_pos(dt)
-
-        if game.item_manager.check_collision(game.joueur.body, game.joueur.destination)!= None:
-            if game.interface_craft.is_open:
-                game.interface_craft.close(game.joueur)
-            else:            
-                object = game.item_manager.check_collision(game.joueur.body, game.joueur.destination)
-                game.interface_craft.open(game.joueur, game.collision_list, object)
-                
+        game.joueur.update_movement(game.pressed.get(pygame.K_LEFT) or game.pressed.get(pygame.K_q), game.pressed.get(pygame.K_RIGHT) or game.pressed.get(pygame.K_d), dt, game.collision_list)
 
         if game.pressed.get(pygame.K_SPACE):
             if game.joueur.can_jump:
@@ -103,27 +80,25 @@ while running:
         #active le mode debug
         game.debug.debug_mode = not game.debug.debug_mode    
 
-    game.pressed_down = {}
-    game.pressed_up = {}
     
-    for event in pygame.event.get():
-        #si le joueur ferme la fenetre
-        if event.type == pygame.QUIT:
-           running = False 
-           pygame.quit() 
+    #affichage
+    screen.fill((255,255,255))
+    
+    game.collision_list.draw_collisions(screen)
+    
+    game.item_manager.draw_objects(screen)
 
-        if event.type == pygame.KEYDOWN:
-            game.pressed[event.key] = True
-            game.pressed_down[event.key] = True
-        if event.type == pygame.KEYUP:
-            game.pressed[event.key] = False
-            game.pressed_up[event.key] = True
+    game.joueur.draw(screen, game.item_manager.item_types)
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            game.pressed["clic_souris"] = True
-            game.pressed_down["clic_souris"] = True
-        if event.type == pygame.MOUSEBUTTONUP:
-            game.pressed["clic_souris"] = False
-            game.pressed_up["clic_souris"] = True
+    if game.debug.debug_mode:
+        game.debug.draw(screen, game.joueur.body, game.joueur.destination, fps, game.joueur.direction)
+
+    
+    if game.interface_craft.is_open:
+        #on affiche l'UI pour le craft du perso
+        game.interface_craft.draw_crafting_interface(screen)
+
+ 
+    pygame.display.flip()
         
         

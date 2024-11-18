@@ -12,10 +12,10 @@ class debug():
         self.circle_color = (255,0,0)
 
 
-    def draw(self, screen, body, pos, fps):        
+    def draw(self, screen, body, pos, fps, dir):        
         self.draw_grid(screen, self.grid_color, self.grid_size)
         self.draw_destination(pos, body, screen, self.circle_color)
-        self.draw_infos(screen, fps, pos)
+        self.draw_infos(screen, fps, pos, dir)
 
 
     def draw_grid(self, screen, line_color, grid_size):
@@ -35,9 +35,13 @@ class debug():
 
         pygame.draw.circle(screen, (255-circle_color[0],255-circle_color[1],255-circle_color[2]), (destination[0]*50 + 25, destination[1]*50 + 25), 10)
 
-    def draw_infos(self, screen, fps, pos):
+    def draw_infos(self, screen, fps, pos, dir):
         fps_text = self.font.render('fps : ' + str(round(fps)), False, (0, 0, 0))
         pos_text = self.font.render(f'x : {int(pos[0])}, y : {int(pos[1])}', False, (0, 0, 0))
+        dir_text = self.font.render(f'direction : {dir}', False, (0, 0, 0))
 
         screen.blit(fps_text, (10,0))
         screen.blit(pos_text, (10,30))
+        screen.blit(dir_text, (10,60))
+
+        #changer ça en un dictionnaire avec comme clés le nom des variables et comme valeur leur valeur.

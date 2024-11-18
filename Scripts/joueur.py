@@ -6,6 +6,7 @@ class joueur(pygame.sprite.Sprite):
         super().__init__()
         #déplacements
         self.speed = 300
+        self.direction = 0
         self.can_move = True
         self.can_jump = False
 
@@ -33,16 +34,34 @@ class joueur(pygame.sprite.Sprite):
 
         #coordonnées
 
-        self.pos = [1*50,11*50] #[400.0, 650.0]
-        self.destination = [0,0] #[8,13]
+        self.pos = [0*50,11*50]
+        self.destination = [0,11]
 
     def move(self, direction, collision_list):
         if not collision_list.check_collision_player((self.destination[0]+direction, self.destination[1]), self.body):
             self.destination[0] += direction
+            self.direction = direction
+        else:            
+            self.direction = 0
     
-    def update_pos(self, dt):        
-        direction = (self.destination[0]*50 - self.pos[0] > 0) * 2 - 1
-        self.pos[0] += self.speed * dt * direction
+    def check_inputs(self, left, right, collision_list):
+        if left:
+            self.move(-1, collision_list)
+        elif right:
+            self.move(1, collision_list)
+        else:
+            return False
+        return True
+
+    def update_movement(self, left, right, dt, collision_list):
+        self.pos[0] += self.speed * dt * self.direction
+        if self.direction != 0 and self.pos[0] * self.direction >= self.destination[0] * 50 * self.direction:
+            if not self.check_inputs(left, right, collision_list):
+                self.pos[0] = self.destination[0] * 50
+                self.direction = 0
+        elif self.direction == 0:
+            self.check_inputs(left, right, collision_list)
+
     
     def apply_gravity(self, dt, collision_list):
         if not self.lower_collision or self.is_jumping: # si on est en l'air ou qu'on a sauté
