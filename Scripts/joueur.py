@@ -27,10 +27,27 @@ class joueur(pygame.sprite.Sprite):
                      [0,0,1,0,0],
                      [0,0,0,0,0],
                      [0,0,0,0,0]]
-
-        #sprite
-        self.image = pygame.image.load("img/rond_noir.png")
-        self.image = pygame.transform.scale(self.image, (50, 50))
+        
+        self.sprites = {}
+        paths = ["0001",
+                "0010",
+                "0011",
+                "0100",
+                "0101",
+                "0110",
+                "0111",
+                "1000",
+                "1001",
+                "1010",
+                "1011",
+                "1100",
+                "1101",
+                "1110",
+                "1111"]
+        for path in paths:
+            sprite = pygame.image.load(f"img/joueur/{path}.png")
+            sprite = pygame.transform.scale(sprite, (50, 50))
+            self.sprites[path] = sprite
 
         #coordonnées
 
@@ -93,14 +110,30 @@ class joueur(pygame.sprite.Sprite):
         #Fait sauter le joueur s'il n'est pas déjà en train de sauter.
         if not self.is_jumping:
             self.is_jumping = True
+
+    def get_bodypart(self, i, j):
+        if i < 0 or i >= 5 or j < 0 or j >= 5:
+            return "0"
+        if self.body[i][j] == 1:
+            return "1"
+        return "0"
+
+    def get_neighboors(self, i, j):
+        res = ""
+        res += self.get_bodypart(i, j)
+        res += self.get_bodypart(i, j+1)
+        res += self.get_bodypart(i+1, j)
+        res += self.get_bodypart(i+1, j+1)
+        return res
     
     def draw(self, screen, item_types):
-        for i in range(5):
-            for j in range(5):
+        for i in range(-1,5):
+            for j in range(-1,5):
+                sprite_path = self.get_neighboors(i,j)
+                if sprite_path != "0000":
+                    screen.blit(self.sprites[sprite_path], pygame.Rect(self.pos[0] + 50 * j + 25, self.pos[1] + 50 * i + 25, 50, 50))
                 bodypart = self.body[i][j]
-                if bodypart == 1:
-                    screen.blit(self.image, pygame.Rect(self.pos[0] + 50 * j, self.pos[1] + 50 * i, 50, 50))
-                elif bodypart >= 2:
+                if bodypart >= 2:
                     screen.blit(item_types[bodypart-2].image, pygame.Rect(self.pos[0] + 50 * j, self.pos[1] + 50 * i, 50, 50))
     
     def check_body(self):
