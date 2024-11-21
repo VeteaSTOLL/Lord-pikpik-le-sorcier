@@ -50,7 +50,6 @@ while running:
     if game.joueur.can_move:            
         # Appliquer la gravité au joueur
         game.joueur.apply_gravity(dt, game.collision_list)
-        game.joueur.check_body()
         game.joueur.update_movement(game.pressed.get(pygame.K_LEFT) or game.pressed.get(pygame.K_q), game.pressed.get(pygame.K_RIGHT) or game.pressed.get(pygame.K_d), dt, game.collision_list)
 
         if game.pressed.get(pygame.K_SPACE):
@@ -72,6 +71,7 @@ while running:
         #ouvrir ou fermer le menu de craft
         if game.interface_craft.is_open:
             game.interface_craft.close(game.joueur)
+            game.joueur.check_body()
         else:            
             object = game.item_manager.check_collision(game.joueur.body, game.joueur.destination)
             game.interface_craft.open(game.joueur, game.collision_list, object)
@@ -84,11 +84,11 @@ while running:
     #affichage
     screen.fill((255,255,255))
     
-    game.collision_list.draw_collisions(screen)
-    
     game.item_manager.draw_objects(screen)
 
     game.joueur.draw(screen, game.item_manager.item_types)
+
+    game.collision_list.draw_collisions(screen)    
 
     if game.debug.debug_mode:
         game.debug.draw(screen, game.joueur.body, game.joueur.destination, fps, game.joueur.direction)

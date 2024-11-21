@@ -49,6 +49,9 @@ class joueur(pygame.sprite.Sprite):
             sprite = pygame.transform.scale(sprite, (50, 50))
             self.sprites[path] = sprite
 
+        self.face_sprite = pygame.image.load(f"img/joueur/face.png")
+        self.face_sprite = pygame.transform.scale(self.face_sprite, (50, 50))
+
         #coordonnées
 
         self.pos = [0*50,11*50]
@@ -126,6 +129,41 @@ class joueur(pygame.sprite.Sprite):
         res += self.get_bodypart(i+1, j+1)
         return res
     
+    def get_center_of_mass(self):
+        avg_i = 0.0
+        avg_j = 0.0
+        n = 0
+        for i in range(5):
+            for j in range(5):
+                if self.body[i][j] == 1:
+                    avg_i += i
+                    avg_j += j
+                    n += 1
+        if n != 0:
+            avg_i /= n
+            avg_j /= n
+        return [avg_i, avg_j]
+    
+    @staticmethod
+    def body_distance(bodypart1, bodypart2):
+        return sqrt((bodypart2[0]-bodypart1[0])**2 + (bodypart2[1]-bodypart1[1])**2)
+
+    def get_body_center(self):
+        center_of_mass = self.get_center_of_mass()
+        first_iteration = True
+        for i in range(5):
+            for j in range(5):
+                if self.body[i][j] == 1:
+                    if first_iteration :
+                        closest_body_part = [i,j]
+                        first_iteration = False
+                    elif self.body_distance([i,j], center_of_mass) < self.body_distance(closest_body_part, center_of_mass):                        
+                        closest_body_part = [i,j]
+        if not first_iteration:
+            return closest_body_part
+        else:
+            print("ERROR : NO BODY")
+    
     def draw(self, screen, item_types):
         for i in range(-1,5):
             for j in range(-1,5):
@@ -135,6 +173,9 @@ class joueur(pygame.sprite.Sprite):
                 bodypart = self.body[i][j]
                 if bodypart >= 2:
                     screen.blit(item_types[bodypart-2].image, pygame.Rect(self.pos[0] + 50 * j, self.pos[1] + 50 * i, 50, 50))
+        
+        face_coords = self.get_body_center()
+        screen.blit(self.face_sprite, pygame.Rect(self.pos[0] + 50 * face_coords[1], self.pos[1] + 50 * face_coords[0], 50, 50))
     
     def check_body(self):
         nb_1 = 0 
