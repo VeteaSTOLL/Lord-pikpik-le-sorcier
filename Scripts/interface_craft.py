@@ -219,12 +219,10 @@ class Interface_Craft():
         if object != None:
             self.storage_case.drag_and_drop.set_item(object.item)
             self.object = object
-        joueur.can_move = False           
         self.is_open = True
     
-    def close(self, joueur):
+    def close(self):
         #vérifier la former du perso avant de fermer
-        joueur.can_move = True
         self.is_open = False
         if self.object != None and self.storage_case.drag_and_drop.item == None:
             self.object.collect()

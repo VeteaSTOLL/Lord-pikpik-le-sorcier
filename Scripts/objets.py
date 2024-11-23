@@ -27,8 +27,8 @@ class object():
 
 class item_manager():
     def __init__(self):
-        self.roulette = item("roulette", 2, "img/roulette.jpg")
-        self.botte = item("botte", 3, "img/botte.jpg")
+        self.roulette = item("roulette", 2, "img/roulette.png")
+        self.botte = item("botte", 3, "img/botte.png")
         self.porte = item("porte", 4, "img/porte.jpg")
 
         self.item_types = [self.roulette, self.botte, self.porte]
@@ -36,7 +36,7 @@ class item_manager():
         self.objects = []
 
         self.objects.append(object(self.roulette, 6,9,1,1))
-        self.objects.append(object(self.roulette, 10,13,1,1))
+        self.objects.append(object(self.roulette, 3,13,1,1))
         self.objects.append(object(self.botte, 4,13,1,1))
         self.objects.append(object(self.porte, 18,8,1,1))
         

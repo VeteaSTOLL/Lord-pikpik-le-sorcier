@@ -21,7 +21,7 @@ while running:
     dt = clock.tick() / 1000.0
     fps = clock.get_fps()
     if fps != 0 :
-        dt = 1 / fps    
+        dt = 1 / fps
 
     game.pressed_down = {}
     game.pressed_up = {}
@@ -47,7 +47,7 @@ while running:
             game.pressed_up["clic_souris"] = True
 
 
-    if game.joueur.can_move:            
+    if not game.interface_craft.is_open:
         # Appliquer la gravité au joueur
         game.joueur.apply_gravity(dt, game.collision_list)
         game.joueur.update_movement(game.pressed.get(pygame.K_LEFT) or game.pressed.get(pygame.K_q), game.pressed.get(pygame.K_RIGHT) or game.pressed.get(pygame.K_d), dt, game.collision_list)
@@ -70,8 +70,8 @@ while running:
     if game.pressed_down.get(pygame.K_e):
         #ouvrir ou fermer le menu de craft
         if game.interface_craft.is_open:
-            game.interface_craft.close(game.joueur)
-            game.joueur.check_body()
+            if game.joueur.is_body_valid():
+                game.interface_craft.close()
         else:            
             object = game.item_manager.check_collision(game.joueur.body, game.joueur.destination)
             game.interface_craft.open(game.joueur, game.collision_list, object)

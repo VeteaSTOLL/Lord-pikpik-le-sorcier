@@ -7,6 +7,7 @@ class joueur(pygame.sprite.Sprite):
         #déplacements
         self.speed = 300
         self.direction = 0
+        self.inertia = 0
         self.can_move = True
         self.can_jump = False
 
@@ -65,13 +66,20 @@ class joueur(pygame.sprite.Sprite):
             self.direction = 0
     
     def check_inputs(self, left, right, collision_list):
-        if left:
-            self.move(-1, collision_list)
-        elif right:
-            self.move(1, collision_list)
+        if self.can_move:
+            if left:
+                self.move(-1, collision_list)
+                return True
+            elif right:
+                self.move(1, collision_list)
+                return True
+            else:
+                return False
+        elif self.inertia != 0:
+            self.move(self.inertia, collision_list)
+            return True
         else:
             return False
-        return True
 
     def update_movement(self, left, right, dt, collision_list):
         self.pos[0] += self.speed * dt * self.direction
@@ -96,6 +104,7 @@ class joueur(pygame.sprite.Sprite):
             self.pos[1] = self.destination[1] * 50 #on case bien le joueur
 
             self.is_jumping = False
+            self.inertia = 0
             self.t = 0 # on réinitialise le timer
 
         self.upper_collision = collision_list.check_collision_player((self.destination[0], self.destination[1]), self.body) #on regarde si il y a une collision en dessus de nous
@@ -107,12 +116,14 @@ class joueur(pygame.sprite.Sprite):
                 self.pos[1] = (self.destination[1]+1)*50
             
         self.destination[1] = self.pos[1] // 50 #on update destination pour les autres scripts
+        self.check_body(collision_list)
         
 
     def jump(self):
         #Fait sauter le joueur s'il n'est pas déjà en train de sauter.
         if not self.is_jumping:
             self.is_jumping = True
+            self.inertia = self.direction
 
     def get_bodypart(self, i, j):
         if i < 0 or i >= 5 or j < 0 or j >= 5:
@@ -162,7 +173,7 @@ class joueur(pygame.sprite.Sprite):
         if not first_iteration:
             return closest_body_part
         else:
-            print("ERROR : NO BODY")
+            return None
     
     def draw(self, screen, item_types):
         for i in range(-1,5):
@@ -170,34 +181,43 @@ class joueur(pygame.sprite.Sprite):
                 sprite_path = self.get_neighboors(i,j)
                 if sprite_path != "0000":
                     screen.blit(self.sprites[sprite_path], pygame.Rect(self.pos[0] + 50 * j + 25, self.pos[1] + 50 * i + 25, 50, 50))
-                bodypart = self.body[i][j]
-                if bodypart >= 2:
-                    screen.blit(item_types[bodypart-2].image, pygame.Rect(self.pos[0] + 50 * j, self.pos[1] + 50 * i, 50, 50))
+                if i >= 0 and j >= 0:
+                    bodypart = self.body[i][j]
+                    if bodypart >= 2:
+                        screen.blit(item_types[bodypart-2].image, pygame.Rect(self.pos[0] + 50 * j, self.pos[1] + 50 * i, 50, 50))
         
         face_coords = self.get_body_center()
-        screen.blit(self.face_sprite, pygame.Rect(self.pos[0] + 50 * face_coords[1], self.pos[1] + 50 * face_coords[0], 50, 50))
+        if face_coords != None:
+            screen.blit(self.face_sprite, pygame.Rect(self.pos[0] + 50 * face_coords[1], self.pos[1] + 50 * face_coords[0], 50, 50))
     
-    def check_body(self):
-        nb_1 = 0 
-        nb_i = 0
+    def check_body(self, collision_list):
+        nb_1 = 0
+        nb_bodypart = 0
+
+        self.can_move = False
+        self.can_jump = False
         for i in range(5):
             for j in range(5):
-                
+                if self.body[i][j] != 0:
+                    nb_bodypart += 1
                 if self.body[i][j] == 1:
                     nb_1 += 1
-                if self.body[i][j] != 0 and self.body[i][j] != 1:
-                    nb_i += 1
-                    
-                if nb_1 == 1: 
+                if self.body[i][j] == 2 and collision_list.check_collision((self.destination[0] + j, self.destination[1] + i + 1)):
                     self.can_move = True
-                elif nb_1 != 1 and nb_i == 0:
-                    self.can_move = False
-                    
-                
-                if self.body[i-1][j] == 1:
-                    if self.body[i][j] == 3:  
-                        self.can_jump = True
-                        self.can_move = True
-                    if self.body[i][j] == 2: 
-                        self.can_move = True 
+                if self.body[i][j] == 3 and collision_list.check_collision((self.destination[0] + j, self.destination[1] + i + 1)):                    
+                    self.can_jump = True
+        
+        self.can_move = self.can_move or (nb_1 == 1 and nb_bodypart == 1)
+
+
+    def is_body_valid(self):
+        nb_1 = 0
+        for i in range(5):
+            for j in range(5):                
+                if self.body[i][j] == 1:
+                    nb_1 += 1
+                if self.body[i][j] == 3 and not(i > 0 and self.body[i-1][j] == 1):
+                    return False
+        return nb_1 >= 1
+
                     
