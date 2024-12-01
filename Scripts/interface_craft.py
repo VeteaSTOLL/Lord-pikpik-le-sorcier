@@ -214,11 +214,15 @@ class Interface_Craft():
         self.holded_item = None
         self.item_origin = None
 
+        self.error = ""
+        self.font = pygame.font.SysFont('arial', 30)
+
     def open(self, joueur, collision_list, object=None):        
         self.update(joueur.body, joueur.destination, collision_list)
         if object != None:
             self.storage_case.drag_and_drop.set_item(object.item)
             self.object = object
+        self.error = ""
         self.is_open = True
     
     def close(self):
@@ -246,6 +250,9 @@ class Interface_Craft():
         for ligne in self.cases:
             for case in ligne:
                 case.drag_and_drop.draw(screen)
+        
+        text = self.font.render(self.error, False, (255, 50, 50))
+        screen.blit(text, ((screen.get_width()-text.get_width())/2, self.base.y - text.get_height()))
     
     def update(self, body, coords, collision_list):
         for ligne in self.cases:

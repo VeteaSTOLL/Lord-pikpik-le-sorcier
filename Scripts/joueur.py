@@ -1,6 +1,30 @@
 import pygame
 from math import sqrt
 
+class body_checker():
+    def __init__(self, i, j):
+        self.i = i
+        self.j = j
+        self.checked = False
+
+    def check_neighbor(self, body, body_checkers, i, j):
+        if not (i < 5 and j < 5 and i >= 0 and j >= 0):
+            return 0
+        if body[i][j] == 1 and not body_checkers[i][j].checked:            
+            return body_checkers[i][j].check_neighbors(body, body_checkers)
+        return 0
+
+    def check_neighbors(self, body, body_checkers):  
+        self.checked = True
+        neighbors_checked = 1     
+
+        neighbors_checked += self.check_neighbor(body, body_checkers, self.i, self.j+1)
+        neighbors_checked += self.check_neighbor(body, body_checkers, self.i, self.j-1)
+        neighbors_checked += self.check_neighbor(body, body_checkers, self.i+1, self.j)
+        neighbors_checked += self.check_neighbor(body, body_checkers, self.i-1, self.j)
+
+        return neighbors_checked
+
 class joueur(pygame.sprite.Sprite): 
     def __init__(self):
         super().__init__()
@@ -211,13 +235,25 @@ class joueur(pygame.sprite.Sprite):
 
 
     def is_body_valid(self):
+        body_checkers = [[None]*5,[None]*5,[None]*5,[None]*5,[None]*5]
         nb_1 = 0
+        
         for i in range(5):
             for j in range(5):                
                 if self.body[i][j] == 1:
+                    if nb_1 == 0:
+                        first_body = [i,j]
                     nb_1 += 1
-                if self.body[i][j] == 3 and not(i > 0 and self.body[i-1][j] == 1):
-                    return False
-        return nb_1 >= 1
+                    body_checkers[i][j] = body_checker(i,j)
+                if (self.body[i][j] == 3 and not(i > 0 and self.body[i-1][j] == 1)) or (self.body[i][j] == 2 and not(i > 0 and self.body[i-1][j] == 1)):
+                    return "Item(s) mal placé(s)"
+                
+        total = body_checkers[first_body[0]][first_body[1]].check_neighbors(self.body, body_checkers)
+        if nb_1 < 1:
+            return "Pas assez de corps"
+        if total != nb_1:
+            return "Forme du corps non connecte"
+        
+        return ""
 
                     
