@@ -234,7 +234,7 @@ class joueur(pygame.sprite.Sprite):
         self.can_move = self.can_move or (nb_1 == 1 and nb_bodypart == 1)
 
 
-    def is_body_valid(self):
+    def is_body_valid(self, item_types):
         body_checkers = [[None]*5,[None]*5,[None]*5,[None]*5,[None]*5]
         nb_1 = 0
         
@@ -245,7 +245,7 @@ class joueur(pygame.sprite.Sprite):
                         first_body = [i,j]
                     nb_1 += 1
                     body_checkers[i][j] = body_checker(i,j)
-                if (self.body[i][j] == 3 and not(i > 0 and self.body[i-1][j] == 1)) or (self.body[i][j] == 2 and not(i > 0 and self.body[i-1][j] == 1)):
+                if self.body[i][j] >= 2 and not item_types[self.body[i][j]-2].is_correctly_placed(self.body, i, j):                    
                     return "Item(s) mal placé(s)"
                 
         total = body_checkers[first_body[0]][first_body[1]].check_neighbors(self.body, body_checkers)

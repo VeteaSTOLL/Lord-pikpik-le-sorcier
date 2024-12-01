@@ -70,11 +70,8 @@ while running:
     if game.pressed_down.get(pygame.K_e):
         #ouvrir ou fermer le menu de craft
         if game.interface_craft.is_open:
-            error = game.joueur.is_body_valid()
-            if error == "":
-                game.interface_craft.close()
-            else:
-                game.interface_craft.error = error
+            error = game.joueur.is_body_valid(game.item_manager.item_types)
+            game.interface_craft.close(error)
         else:            
             object = game.item_manager.check_collision(game.joueur.body, game.joueur.destination)
             game.interface_craft.open(game.joueur, game.collision_list, object)

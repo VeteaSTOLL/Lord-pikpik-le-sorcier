@@ -146,6 +146,9 @@ class drag_and_drop():
         self.rect = pygame.Rect(x,y,width,height)
         self.image = None
 
+        self.show_connectivity_lines = False
+        self.lines = [[(x,y), (x+width,y)], [(x+width,y), (x+width,y+height)], [(x+width,y+height), (x,y+height)], [(x,y+height), (x,y)]]
+
     def set_item(self, item):
         if item != None:
             self.item = item
@@ -159,6 +162,7 @@ class drag_and_drop():
     def clear(self):
         self.item = None
         self.image = None
+        self.show_connectivity_lines = False
         self.reset_image_coords()
     
     def reset_image_coords(self):
@@ -168,6 +172,12 @@ class drag_and_drop():
     def draw(self, screen):
         if self.image:
             screen.blit(self.image, self.rect)
+        if self.item != None and self.show_connectivity_lines:
+            for i in range(4):
+                if self.item.connectivity[i]:
+                    start = (self.lines[i][0][0] + (self.rect.x - self.x), self.lines[i][0][1] + (self.rect.y - self.y))
+                    end = (self.lines[i][1][0] + (self.rect.x - self.x), self.lines[i][1][1] + (self.rect.y - self.y))
+                    pygame.draw.line(screen, (255,50,50), start, end, width=3)
 
 
 class Interface_Craft():
@@ -225,14 +235,25 @@ class Interface_Craft():
         self.error = ""
         self.is_open = True
     
-    def close(self):
-        #vérifier la former du perso avant de fermer
-        self.is_open = False
-        if self.object != None and self.storage_case.drag_and_drop.item == None:
-            self.object.collect()
-        
-        self.object = None
-        self.storage_case.drag_and_drop.clear()
+    def close(self, error):
+        if error == "":
+            self.is_open = False
+            if self.object != None and self.storage_case.drag_and_drop.item == None:
+                self.object.collect()
+            
+            self.object = None
+            self.storage_case.drag_and_drop.clear()
+            self.show_items_connectivity(False)
+        else:
+            self.error = error
+            if error == "Item(s) mal placé(s)":
+                self.show_items_connectivity(True)
+
+    def show_items_connectivity(self, b):
+        for ligne in self.cases:
+            for case in ligne:
+                if case.drag_and_drop.item != None or not b:
+                    case.drag_and_drop.show_connectivity_lines = b
 
     def draw_crafting_interface(self, screen):
         self.base.draw(screen)        
