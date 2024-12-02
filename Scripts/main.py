@@ -11,8 +11,6 @@ screen = pygame.display.set_mode((1000, 750))
 
 running = True 
 
-
-
 #charger notre jeu
 game= Game(screen)
 

@@ -74,13 +74,15 @@ class case():
         else:
             self.set_element(body, self.drag_and_drop.item.id)
 
-    def paint(self, body, set):
+    def paint(self, body, set, son_pinceau, son_gomme):
         if set:
             if self.element == 0:
                 self.set_element(body, 1)
+                pygame.mixer.Sound.play(son_pinceau)
         else:
             if self.element == 1:
                 self.set_element(body, 0)
+                pygame.mixer.Sound.play(son_gomme)
     
     def set_element(self, body, element):
         if not self.in_collision:
@@ -227,6 +229,11 @@ class Interface_Craft():
         self.error = ""
         self.font = pygame.font.SysFont('arial', 30)
 
+
+        self.son_pinceau = pygame.mixer.Sound("sounds/pinceau.mp3")
+        self.son_gomme = pygame.mixer.Sound("sounds/gomme.mp3")
+        self.son_erreur = pygame.mixer.Sound("sounds/erreur.mp3")
+
     def open(self, joueur, collision_list, object=None):        
         self.update(joueur.body, joueur.destination, collision_list)
         if object != None:
@@ -234,6 +241,7 @@ class Interface_Craft():
             self.object = object
         self.error = ""
         self.is_open = True
+        pygame.mixer.music.pause()
     
     def close(self, error):
         if error == "":
@@ -244,7 +252,9 @@ class Interface_Craft():
             self.object = None
             self.storage_case.drag_and_drop.clear()
             self.show_items_connectivity(False)
-        else:
+            pygame.mixer.music.unpause()
+        else:            
+            pygame.mixer.Sound.play(self.son_erreur)
             self.error = error
             if error == "Item(s) mal placé(s)":
                 self.show_items_connectivity(True)
@@ -291,7 +301,7 @@ class Interface_Craft():
             for ligne in self.cases:
                 for case in ligne:
                     if case.pannel.contain(mouse_pos):
-                        case.paint(body, self.selected_tool == "pinceau")
+                        case.paint(body, self.selected_tool == "pinceau", self.son_pinceau, self.son_gomme)
                         return
                         
             for t in self.tools:
@@ -323,7 +333,7 @@ class Interface_Craft():
                         if case.pannel.contain(mouse_pos) and not case.in_collision and case.element == 0:
                             self.item_origin.clear()
                             case.drag_and_drop.set_item(self.holded_item)
-            
+                            pygame.mixer.Sound.play(self.son_pinceau)
 
             self.item_origin.reset_image_coords()
             self.holded_item = None

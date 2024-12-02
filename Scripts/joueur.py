@@ -77,6 +77,10 @@ class joueur(pygame.sprite.Sprite):
         self.face_sprite = pygame.image.load(f"img/joueur/face.png")
         self.face_sprite = pygame.transform.scale(self.face_sprite, (50, 50))
 
+        #sons
+
+        self.son_boing = pygame.mixer.Sound("sounds/boing.mp3")
+
         #coordonnées
 
         self.pos = [0*50,11*50]
@@ -86,8 +90,12 @@ class joueur(pygame.sprite.Sprite):
         if not collision_list.check_collision_player((self.destination[0]+direction, self.destination[1]), self.body):
             self.destination[0] += direction
             self.direction = direction
+            if not pygame.mixer.music.get_busy():
+                pygame.mixer.music.load('sounds/slide.mp3')
+                pygame.mixer.music.play(-1)
         else:            
             self.direction = 0
+            pygame.mixer.music.stop()
     
     def check_inputs(self, left, right, collision_list):
         if self.can_move:
@@ -111,6 +119,7 @@ class joueur(pygame.sprite.Sprite):
             if not self.check_inputs(left, right, collision_list):
                 self.pos[0] = self.destination[0] * 50
                 self.direction = 0
+                pygame.mixer.music.stop()
         elif self.direction == 0:
             self.check_inputs(left, right, collision_list)
 
@@ -148,6 +157,8 @@ class joueur(pygame.sprite.Sprite):
         if not self.is_jumping:
             self.is_jumping = True
             self.inertia = self.direction
+            pygame.mixer.Sound.play(self.son_boing)
+
 
     def get_bodypart(self, i, j):
         if i < 0 or i >= 5 or j < 0 or j >= 5:
