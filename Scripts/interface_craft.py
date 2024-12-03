@@ -36,7 +36,7 @@ class pannel():
 class case():
     def __init__(self, i, j, x, y, width, height):
         self.body_color = (0,0,0)
-        self.object_color = (200,250,200)
+        self.object_color = (255,255,255)
         self.void_color = (255,255,255)
         self.collision_color = (200,150,150)
         self.error_color = (255,0,255)

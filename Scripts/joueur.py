@@ -123,12 +123,12 @@ class joueur(pygame.sprite.Sprite):
         if not collision_list.check_collision_player((self.destination[0]+direction, self.destination[1]), self.body):
             self.destination[0] += direction
             self.direction = direction
+            self.check_for_item(item_manager)
             if not pygame.mixer.music.get_busy():
                 pygame.mixer.music.load('sounds/slide.mp3')
                 pygame.mixer.music.play(-1)
         elif self.direction != 0:            
             self.direction = 0
-            self.check_for_item(item_manager)
             pygame.mixer.music.stop()
     
     def check_inputs(self, left, right, collision_list, item_manager):
@@ -152,8 +152,7 @@ class joueur(pygame.sprite.Sprite):
         if self.direction != 0 and self.pos[0] * self.direction >= self.destination[0] * 50 * self.direction:
             if not self.check_inputs(left, right, collision_list, item_manager):
                 self.pos[0] = self.destination[0] * 50
-                self.direction = 0
-                self.check_for_item(item_manager)
+                self.direction = 0                
                 pygame.mixer.music.stop()
         elif self.direction == 0:
             self.check_inputs(left, right, collision_list, item_manager)
@@ -265,8 +264,7 @@ class joueur(pygame.sprite.Sprite):
         face_coords = self.get_body_center()
         if face_coords != None:
             screen.blit(self.face_sprite, pygame.Rect(self.pos[0] + 50 * face_coords[1], self.pos[1] + 50 * face_coords[0], 50, 50))
-
-        self.item_indicator.draw(screen, self.pos[0] + 50 * face_coords[1], self.pos[1] + 50 * face_coords[0]-50)
+            self.item_indicator.draw(screen, self.pos[0] + 50 * face_coords[1], self.pos[1] + 50 * face_coords[0]-50)
     
     def check_body(self, collision_list):
         nb_1 = 0
