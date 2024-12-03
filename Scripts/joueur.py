@@ -1,5 +1,5 @@
 import pygame
-from math import sqrt
+from math import sqrt, sin
 
 class body_checker():
     def __init__(self, i, j):
@@ -24,6 +24,36 @@ class body_checker():
         neighbors_checked += self.check_neighbor(body, body_checkers, self.i-1, self.j)
 
         return neighbors_checked
+
+class item_indicator():
+    def __init__(self):
+        self.is_visible = False
+        self.dy = 0
+        self.t = 0
+        self.amplitude = 30
+        self.vitesse = 5
+
+        self.sprite = pygame.image.load("img/indicator.png")
+        self.sprite = pygame.transform.scale(self.sprite, (50, 50))
+    
+    def enable(self):
+        self.is_visible = True
+
+    def disable(self):
+        self.is_visible = False
+        self.dy = 0
+        self.t = 0
+
+    def update(self, dt):
+        if self.is_visible:
+            self.t += dt
+            self.dy = -abs(sin(self.t * self.vitesse)) * self.amplitude
+
+    def draw(self, screen, x, y):
+        if self.is_visible:
+            screen.blit(self.sprite, pygame.Rect(x, y+self.dy, 50, 50))
+
+
 
 class joueur(pygame.sprite.Sprite): 
     def __init__(self):
@@ -74,8 +104,8 @@ class joueur(pygame.sprite.Sprite):
             sprite = pygame.transform.scale(sprite, (50, 50))
             self.sprites[path] = sprite
 
-        self.face_sprite = pygame.image.load(f"img/joueur/face.png")
-        self.face_sprite = pygame.transform.scale(self.face_sprite, (50, 50))
+        self.face_sprite = pygame.image.load("img/joueur/face.png")
+        self.face_sprite = pygame.transform.scale(self.face_sprite, (50, 50))     
 
         #sons
 
@@ -86,44 +116,55 @@ class joueur(pygame.sprite.Sprite):
         self.pos = [0*50,11*50]
         self.destination = [0,11]
 
-    def move(self, direction, collision_list):
+        # autres
+        self.item_indicator = item_indicator()
+
+    def move(self, direction, collision_list, item_manager):
         if not collision_list.check_collision_player((self.destination[0]+direction, self.destination[1]), self.body):
             self.destination[0] += direction
             self.direction = direction
             if not pygame.mixer.music.get_busy():
                 pygame.mixer.music.load('sounds/slide.mp3')
                 pygame.mixer.music.play(-1)
-        else:            
+        elif self.direction != 0:            
             self.direction = 0
+            self.check_for_item(item_manager)
             pygame.mixer.music.stop()
     
-    def check_inputs(self, left, right, collision_list):
+    def check_inputs(self, left, right, collision_list, item_manager):
         if self.can_move:
             if left:
-                self.move(-1, collision_list)
+                self.move(-1, collision_list, item_manager)
                 return True
             elif right:
-                self.move(1, collision_list)
+                self.move(1, collision_list, item_manager)
                 return True
             else:
                 return False
         elif self.inertia != 0:
-            self.move(self.inertia, collision_list)
+            self.move(self.inertia, collision_list, item_manager)
             return True
         else:
             return False
 
-    def update_movement(self, left, right, dt, collision_list):
+    def update_movement(self, left, right, dt, collision_list, item_manager):
         self.pos[0] += self.speed * dt * self.direction
         if self.direction != 0 and self.pos[0] * self.direction >= self.destination[0] * 50 * self.direction:
-            if not self.check_inputs(left, right, collision_list):
+            if not self.check_inputs(left, right, collision_list, item_manager):
                 self.pos[0] = self.destination[0] * 50
                 self.direction = 0
+                self.check_for_item(item_manager)
                 pygame.mixer.music.stop()
         elif self.direction == 0:
-            self.check_inputs(left, right, collision_list)
+            self.check_inputs(left, right, collision_list, item_manager)
+        self.item_indicator.update(dt)
 
-    
+    def check_for_item(self, item_manager):
+        if item_manager.check_collision(self.body, self.destination):
+            self.item_indicator.enable()
+        else:
+            self.item_indicator.disable()
+        
     def apply_gravity(self, dt, collision_list):
         if not self.lower_collision or self.is_jumping: # si on est en l'air ou qu'on a sauté
             self.t += dt #on augmente le temps passé en l'air
@@ -224,6 +265,8 @@ class joueur(pygame.sprite.Sprite):
         face_coords = self.get_body_center()
         if face_coords != None:
             screen.blit(self.face_sprite, pygame.Rect(self.pos[0] + 50 * face_coords[1], self.pos[1] + 50 * face_coords[0], 50, 50))
+
+        self.item_indicator.draw(screen, self.pos[0] + 50 * face_coords[1], self.pos[1] + 50 * face_coords[0]-50)
     
     def check_body(self, collision_list):
         nb_1 = 0

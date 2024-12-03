@@ -47,7 +47,7 @@ class item_manager():
         self.objects = []
 
         self.objects.append(object(self.roulette, 6,9,1,1))
-        self.objects.append(object(self.roulette, 3,13,1,1))
+        self.objects.append(object(self.roulette, 0,13,1,1))
         self.objects.append(object(self.botte, 4,13,1,1))
         self.objects.append(object(self.porte, 18,8,1,1))
         

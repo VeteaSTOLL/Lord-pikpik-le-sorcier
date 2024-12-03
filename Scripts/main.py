@@ -48,7 +48,7 @@ while running:
     if not game.interface_craft.is_open:
         # Appliquer la gravité au joueur
         game.joueur.apply_gravity(dt, game.collision_list)
-        game.joueur.update_movement(game.pressed.get(pygame.K_LEFT) or game.pressed.get(pygame.K_q), game.pressed.get(pygame.K_RIGHT) or game.pressed.get(pygame.K_d), dt, game.collision_list)
+        game.joueur.update_movement(game.pressed.get(pygame.K_LEFT) or game.pressed.get(pygame.K_q), game.pressed.get(pygame.K_RIGHT) or game.pressed.get(pygame.K_d), dt, game.collision_list, game.item_manager)
 
         if game.pressed.get(pygame.K_SPACE):
             if game.joueur.can_jump:
@@ -70,6 +70,7 @@ while running:
         if game.interface_craft.is_open:
             error = game.joueur.is_body_valid(game.item_manager.item_types)
             game.interface_craft.close(error)
+            game.joueur.check_for_item(game.item_manager)
         else:            
             object = game.item_manager.check_collision(game.joueur.body, game.joueur.destination)
             game.interface_craft.open(game.joueur, game.collision_list, object)
