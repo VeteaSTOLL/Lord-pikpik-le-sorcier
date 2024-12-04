@@ -13,7 +13,7 @@ running = True
 
 #charger notre jeu
 game = Game(screen)
-niveau_actuel = 2
+niveau_actuel = 1
 niveau = game.level_manager.creer_niveau(niveau_actuel)
 
 game.collision_list = niveau.get_collisions()
@@ -50,14 +50,14 @@ while running:
             game.pressed_up["clic_souris"] = True
             
             
-##################################              
-    porte = game.item_manager.check_collision(game.joueur.body, game.joueur.destination)
+##################################  : )            
+    # porte = game.item_manager.check_collision(game.joueur.body, game.joueur.destination)
     
-    if porte and porte.item.name == "porte":
-        niveau_actuel += 1
-        niveau = game.level_manager.creer_niveau(niveau_actuel)
-        game.joueur.reset_body()
-        game.interface_craft.reset_interface()
+    # if porte and porte.item.name == "porte":
+    #     niveau_actuel += 1
+    #     niveau = game.level_manager.creer_niveau(niveau_actuel)
+    #     game.joueur.reset_body()
+    #     game.interface_craft.reset_interface()
     
     if niveau_actuel > game.level_manager.nb_level:
         running = False
@@ -92,14 +92,26 @@ while running:
             error = game.joueur.is_body_valid(game.item_manager.item_types)
             game.interface_craft.close(error)
             game.joueur.check_for_item(game.item_manager)
-        else:            
+        else:       
             object = game.item_manager.check_collision(game.joueur.body, game.joueur.destination)
-            game.interface_craft.open(game.joueur, game.collision_list, object)
+            if object and object.item.name == "porte":
+                niveau_actuel += 1
+                niveau = game.level_manager.creer_niveau(niveau_actuel)
+                game.joueur.reset_body()
+                game.interface_craft.reset_interface()
+            else:     
+                game.interface_craft.open(game.joueur, game.collision_list, object)
+    
+    
+
     
     if game.pressed_down.get(pygame.K_F1):
         #active le mode debug
         game.debug.debug_mode = not game.debug.debug_mode    
 
+    # if game.pressed_down.get(pygame.K_r):
+    #     Restart le niveau
+    #     return none
     
     #affichage
     screen.fill((255,255,255))

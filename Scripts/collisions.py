@@ -13,13 +13,6 @@ class collision_list():
     def __init__(self):        
         self.collisions = []
 
-        # self.collisions.append(collision(0,14,13,4))
-        # self.collisions.append(collision(15,14,20,4))
-        # self.collisions.append(collision(-4,0,4,18))
-        # self.collisions.append(collision(20,0,4,18))
-        # self.collisions.append(collision(5,10,3,4))
-        # self.collisions.append(collision(17,9,3,5))
-
     def draw_collisions(self, screen):
         for c in self.collisions:
             c.draw(screen)

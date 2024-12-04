@@ -35,10 +35,10 @@ class pannel():
 
 class case():
     def __init__(self, i, j, x, y, width, height):
-        self.body_color = (0,0,0)
+        self.body_color = (50,255,220)
         self.object_color = (255,255,255)
         self.void_color = (255,255,255)
-        self.collision_color = (200,150,150)
+        self.collision_color = (50,50,50)
         self.error_color = (255,0,255)
 
         self.pannel = pannel(x, y, width, height, self.void_color)

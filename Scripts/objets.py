@@ -6,6 +6,7 @@ class item ():
         self.id = id
         self.image_path = image_path
         self.image = pygame.image.load(image_path)
+        self.image = pygame.transform.scale(self.image, (50, 50))
         self.connectivity = connectivity
 
     def is_correctly_placed(self, body, i, j):
@@ -46,11 +47,6 @@ class item_manager():
         self.item_types = [self.roulette, self.botte, self.porte]
 
         self.objects = []
-
-        # self.objects.append(object(self.roulette, 6,9,1,1))
-        # self.objects.append(object(self.roulette, 0,13,1,1))
-        # self.objects.append(object(self.botte, 4,13,1,1))
-        # self.objects.append(object(self.porte, 18,8,1,1))
         
         
     def draw_objects(self, screen):
