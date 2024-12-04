@@ -12,7 +12,12 @@ screen = pygame.display.set_mode((1000, 750))
 running = True 
 
 #charger notre jeu
-game= Game(screen)
+game = Game(screen)
+niveau_actuel = 2
+niveau = game.level_manager.creer_niveau(niveau_actuel)
+
+game.collision_list = niveau.get_collisions()
+game.item_manager.objects = niveau.get_objects()
 
 while running:
     #permet de renseigner la variable "dt" qui est le différentiel de temps entre l'avant dernière frame et la dernière frame, prartique pour pouvoir rendre le gameplay indépendant du framerate
@@ -43,6 +48,22 @@ while running:
         if event.type == pygame.MOUSEBUTTONUP:
             game.pressed["clic_souris"] = False
             game.pressed_up["clic_souris"] = True
+            
+            
+##################################              
+    porte = game.item_manager.check_collision(game.joueur.body, game.joueur.destination)
+    
+    if porte and porte.item.name == "porte":
+        niveau_actuel += 1
+        niveau = game.level_manager.creer_niveau(niveau_actuel)
+        game.joueur.reset_body()
+        game.interface_craft.reset_interface()
+    
+    if niveau_actuel > game.level_manager.nb_level:
+        running = False
+    else:
+        game.collision_list = niveau.get_collisions()
+        game.item_manager.objects = niveau.get_objects()
 
 
     if not game.interface_craft.is_open:

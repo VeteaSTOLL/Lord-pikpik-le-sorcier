@@ -307,5 +307,24 @@ class joueur(pygame.sprite.Sprite):
             return "Forme du corps non connecte"
         
         return ""
+    
+    def reset_body(self):
+        self.pos = [0 * 50, 11 * 50]
+        self.destination = [0, 11]
+
+        self.body = [
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 1, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0]
+        ]
+        self.is_jumping = False
+        self.lower_collision = False
+        self.upper_collision = False
+        self.t = 0
+        self.inertia = 0
+        self.can_move = True
+        self.can_jump = False
 
                     

@@ -22,6 +22,7 @@ class object():
     def __init__(self, item, x, y, dx, dy):
         self.item = item
         item.image = pygame.transform.scale(item.image, (dx*50, dy*50))
+
                 
         self.rect = pygame.Rect(x * 50, y * 50, dx * 50, dy * 50)
         self.position = [x, y]
@@ -46,10 +47,10 @@ class item_manager():
 
         self.objects = []
 
-        self.objects.append(object(self.roulette, 6,9,1,1))
-        self.objects.append(object(self.roulette, 0,13,1,1))
-        self.objects.append(object(self.botte, 4,13,1,1))
-        self.objects.append(object(self.porte, 18,8,1,1))
+        # self.objects.append(object(self.roulette, 6,9,1,1))
+        # self.objects.append(object(self.roulette, 0,13,1,1))
+        # self.objects.append(object(self.botte, 4,13,1,1))
+        # self.objects.append(object(self.porte, 18,8,1,1))
         
         
     def draw_objects(self, screen):

@@ -342,3 +342,28 @@ class Interface_Craft():
             for ligne in self.cases:
                 for case in ligne:
                     case.update_element(body)
+
+    
+    def reset_interface(self):
+           
+        for ligne in self.cases:
+            for case in ligne:
+                case.set_element(body= [[0]*self.size for _ in range(self.size)] , element=0)
+                case.drag_and_drop.clear()
+
+        for t in self.tools:
+            t.select(False)
+        self.tools[0].select(True)  
+        self.selected_tool = "pinceau"
+
+        self.storage_case.drag_and_drop.clear()
+        self.storage_case.reset_drag_and_drop_coords()
+        self.object = None
+
+        self.error = ""
+
+        self.holded_item = None
+        self.item_origin = None
+
+        self.show_items_connectivity(False)
+        self.is_open = False
