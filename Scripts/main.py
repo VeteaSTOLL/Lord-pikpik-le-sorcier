@@ -13,8 +13,8 @@ running = True
 
 #charger notre jeu
 game = Game(screen)
-niveau_actuel = 1
-niveau = game.level_manager.creer_niveau(niveau_actuel)
+current_level = 1
+niveau = game.level_manager.creer_niveau(current_level)
 
 game.collision_list = niveau.get_collisions()
 game.item_manager.objects = niveau.get_objects()
@@ -50,17 +50,10 @@ while running:
             game.pressed_up["clic_souris"] = True
             
             
-##################################  : )            
-    # porte = game.item_manager.check_collision(game.joueur.body, game.joueur.destination)
     
-    # if porte and porte.item.name == "porte":
-    #     niveau_actuel += 1
-    #     niveau = game.level_manager.creer_niveau(niveau_actuel)
-    #     game.joueur.reset_body()
-    #     game.interface_craft.reset_interface()
-    
-    if niveau_actuel > game.level_manager.nb_level:
+    if current_level > game.level_manager.nb_level:
         running = False
+        print(f"current_level = {current_level}, nb_level = {game.level_manager.nb_level}")
     else:
         game.collision_list = niveau.get_collisions()
         game.item_manager.objects = niveau.get_objects()
@@ -95,8 +88,8 @@ while running:
         else:       
             object = game.item_manager.check_collision(game.joueur.body, game.joueur.destination)
             if object and object.item.name == "porte":
-                niveau_actuel += 1
-                niveau = game.level_manager.creer_niveau(niveau_actuel)
+                current_level += 1
+                niveau = game.level_manager.creer_niveau(current_level)
                 game.joueur.reset_body()
                 game.interface_craft.reset_interface()
             else:     
@@ -109,9 +102,10 @@ while running:
         #active le mode debug
         game.debug.debug_mode = not game.debug.debug_mode    
 
-    # if game.pressed_down.get(pygame.K_r):
-    #     Restart le niveau
-    #     return none
+    # if game.pressed_down.get(pygame.K_x):
+    #     current_level = game.level_manager.creer_niveau(current_level)
+    #     game.joueur.reset_body()
+    #     game.interface_craft.reset_interface()
     
     #affichage
     screen.fill((255,255,255))
