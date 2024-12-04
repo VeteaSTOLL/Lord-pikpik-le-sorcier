@@ -77,18 +77,18 @@ class case():
     def paint(self, body, set, son_pinceau, son_gomme):
         if set:
             if self.element == 0:
-                self.set_element(body, 1)
-                pygame.mixer.Sound.play(son_pinceau)
+                self.set_element(body, 1, son_pinceau)
         else:
             if self.element == 1:
-                self.set_element(body, 0)
-                pygame.mixer.Sound.play(son_gomme)
+                self.set_element(body, 0, son_gomme)
     
-    def set_element(self, body, element):
+    def set_element(self, body, element, sound=None):
         if not self.in_collision:
             self.element = element
             body[self.j][self.i] = self.element
             self.update_color()
+            if sound != None:
+                pygame.mixer.Sound.play(sound)
         
     def draw(self, screen):
         self.pannel.draw(screen)
@@ -230,9 +230,9 @@ class Interface_Craft():
         self.font = pygame.font.SysFont('arial', 30)
 
 
-        self.son_pinceau = pygame.mixer.Sound("sounds/pinceau.mp3")
-        self.son_gomme = pygame.mixer.Sound("sounds/gomme.mp3")
-        self.son_erreur = pygame.mixer.Sound("sounds/erreur.mp3")
+        self.son_pinceau = pygame.mixer.Sound("sounds/pinceau.wav")
+        self.son_gomme = pygame.mixer.Sound("sounds/gomme.wav")
+        self.son_erreur = pygame.mixer.Sound("sounds/erreur.wav")
 
     def open(self, joueur, collision_list, object=None):        
         self.update(joueur.body, joueur.destination, collision_list)

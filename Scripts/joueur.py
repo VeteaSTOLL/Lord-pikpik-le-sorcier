@@ -104,12 +104,18 @@ class joueur(pygame.sprite.Sprite):
             sprite = pygame.transform.scale(sprite, (50, 50))
             self.sprites[path] = sprite
 
-        self.face_sprite = pygame.image.load("img/joueur/face.png")
-        self.face_sprite = pygame.transform.scale(self.face_sprite, (50, 50))     
+        self.face_sprite_origin = pygame.image.load("img/joueur/face.png")
+        self.face_sprite_origin = pygame.transform.scale(self.face_sprite_origin, (50, 50))    
+
+        self.face_sprite = self.face_sprite_origin
+        self.face_rect = pygame.Rect(0,0,50,50)
+        self.rotation = 0
+
+        self.is_ball = True
 
         #sons
 
-        self.son_boing = pygame.mixer.Sound("sounds/boing.mp3")
+        self.son_boing = pygame.mixer.Sound("sounds/boing.wav")
 
         #coordonnées
 
@@ -125,7 +131,7 @@ class joueur(pygame.sprite.Sprite):
             self.direction = direction
             self.check_for_item(item_manager)
             if not pygame.mixer.music.get_busy():
-                pygame.mixer.music.load('sounds/slide.mp3')
+                pygame.mixer.music.load('sounds/slide.wav')
                 pygame.mixer.music.play(-1)
         elif self.direction != 0:            
             self.direction = 0
@@ -148,7 +154,14 @@ class joueur(pygame.sprite.Sprite):
             return False
 
     def update_movement(self, left, right, dt, collision_list, item_manager):
-        self.pos[0] += self.speed * dt * self.direction
+        distance = self.speed * dt * self.direction
+        self.pos[0] += distance
+        if self.is_ball:
+            self.rotation -= distance * 360 / 157
+        else:
+            self.rotation = 0            
+        self.rotate()
+
         if self.direction != 0 and self.pos[0] * self.direction >= self.destination[0] * 50 * self.direction:
             if not self.check_inputs(left, right, collision_list, item_manager):
                 self.pos[0] = self.destination[0] * 50
@@ -157,6 +170,10 @@ class joueur(pygame.sprite.Sprite):
         elif self.direction == 0:
             self.check_inputs(left, right, collision_list, item_manager)
         self.item_indicator.update(dt)
+
+    def rotate(self):
+        self.face_sprite = pygame.transform.rotozoom(self.face_sprite_origin, self.rotation, 1)
+        self.face_rect = self.face_sprite.get_rect(center=self.face_rect.center)
 
     def check_for_item(self, item_manager):
         if item_manager.check_collision(self.body, self.destination):
@@ -263,7 +280,9 @@ class joueur(pygame.sprite.Sprite):
         
         face_coords = self.get_body_center()
         if face_coords != None:
-            screen.blit(self.face_sprite, pygame.Rect(self.pos[0] + 50 * face_coords[1], self.pos[1] + 50 * face_coords[0], 50, 50))
+            self.face_rect.centerx = self.pos[0] + 50 * face_coords[1] + 25
+            self.face_rect.centery = self.pos[1] + 50 * face_coords[0] + 25
+            screen.blit(self.face_sprite, self.face_rect)
             self.item_indicator.draw(screen, self.pos[0] + 50 * face_coords[1], self.pos[1] + 50 * face_coords[0]-50)
     
     def check_body(self, collision_list):
@@ -283,7 +302,8 @@ class joueur(pygame.sprite.Sprite):
                 if self.body[i][j] == 3 and collision_list.check_collision((self.destination[0] + j, self.destination[1] + i + 1)):                    
                     self.can_jump = True
         
-        self.can_move = self.can_move or (nb_1 == 1 and nb_bodypart == 1)
+        self.is_ball = (nb_1 == 1 and nb_bodypart == 1)
+        self.can_move = self.can_move or self.is_ball
 
 
     def is_body_valid(self, item_types):
