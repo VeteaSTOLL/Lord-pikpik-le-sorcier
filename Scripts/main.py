@@ -53,7 +53,6 @@ while running:
     
     if current_level > game.level_manager.nb_level:
         running = False
-        print(f"current_level = {current_level}, nb_level = {game.level_manager.nb_level}")
     else:
         game.collision_list = niveau.get_collisions()
         game.item_manager.objects = niveau.get_objects()
@@ -102,10 +101,10 @@ while running:
         #active le mode debug
         game.debug.debug_mode = not game.debug.debug_mode    
 
-    # if game.pressed_down.get(pygame.K_x):
-    #     current_level = game.level_manager.creer_niveau(current_level)
-    #     game.joueur.reset_body()
-    #     game.interface_craft.reset_interface()
+    if game.pressed_down.get(pygame.K_r):
+        niveau = game.level_manager.creer_niveau(current_level)
+        game.joueur.reset_body()
+        game.interface_craft.reset_interface()
     
     #affichage
     screen.fill((255,255,255))

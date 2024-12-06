@@ -2,6 +2,8 @@
 from level import Level
 from objets import item_manager
 from joueur import *
+from interface_craft import *
+from level_manager import*
 
 class Level_manager:
     def __init__(self):
@@ -50,3 +52,9 @@ class Level_manager:
         collisions_elem = level["collisions"]
         objets_elem = level["items"]
         return Level(collisions_elem, objets_elem)
+    
+    def load_level(self, current_level):
+        self.creer_niveau(current_level)
+        joueur.reset_body()
+        Interface_Craft.reset_interface()
+        
