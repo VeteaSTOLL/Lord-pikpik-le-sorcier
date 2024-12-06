@@ -48,8 +48,6 @@ while running:
         if event.type == pygame.MOUSEBUTTONUP:
             game.pressed["clic_souris"] = False
             game.pressed_up["clic_souris"] = True
-            
-            
     
     if current_level > game.level_manager.nb_level:
         running = False
@@ -123,7 +121,15 @@ while running:
         #on affiche l'UI pour le craft du perso
         game.interface_craft.draw_crafting_interface(screen)
 
- 
+    if  game.joueur.pos[1]>750 :
+        #game.joueur.reset_body()
+        #game.interface_craft.reset_interface()
+        image = pygame.image.load("img/game_over.png")
+        screen.fill((0, 0, 0))
+        screen.blit(image,(0,0))
+        
+    
     pygame.display.flip()
+    
         
         

@@ -8,7 +8,7 @@ from level_manager import*
 class Level_manager:
     def __init__(self):
         self.item_manager = item_manager()
-        self.nb_level = 2
+        self.nb_level = 3
         self.levels=[
             {
                 "collisions" : [                
@@ -41,6 +41,13 @@ class Level_manager:
                 
                 "items":[
                     (self.item_manager.roulette, 3, 13, 1, 1)
+                ]
+            },
+            {
+                "collisions" :[
+                ],
+                
+                "items":[
                 ]
             }
 
