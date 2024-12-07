@@ -367,3 +367,74 @@ class Interface_Craft():
 
         self.show_items_connectivity(False)
         self.is_open = False
+
+class Interface_Item_Discovery():
+    def __init__(self, screen_width, screen_height):
+        self.is_open = False
+
+        self.base = pannel(0, 0, 600, 400, (255, 255, 255))
+        self.base.center(0, 0, screen_width, screen_height)
+        
+        self.item_frame = pygame.Rect((screen_width-100)/2,220,100,100)
+        self.item_sprite = None
+
+        self.item = None
+        
+        self.title_font = pygame.font.SysFont('arial', 30, bold=True)
+        self.body_font = pygame.font.SysFont('arial', 20)
+
+        self.item_name_render = None
+        self.item_desciption_renders = []
+        self.indication_render = self.body_font.render("Appuyer sur E pour fermer", False, (0, 0, 0))
+
+    def open(self, item):
+        self.item = item
+        item.discovered = True
+
+        self.item_sprite = item.image
+        self.item_sprite = pygame.transform.scale(self.item_sprite, (100, 100))    
+        
+        self.item_name_render = self.title_font.render(item.name.upper(), False, (0, 0, 0))
+        self.render_paragraph(item.description, 50, self.item_desciption_renders)
+
+        self.is_open = True
+    
+    def close(self):
+        self.is_open = False
+        self.item_name_render = []
+        self.item_desciption_renders = []
+
+    def render_paragraph(self, text, length, render_list):
+        lines = []
+        line = ""
+        word = ""
+        letters = 0
+        for i in range(len(text)):
+            if letters > length:
+                lines.append(line)
+                line = ""
+                letters = 0
+
+            if text[i] == " ":
+                line += word + " "
+                word = ""
+            else:
+                word += text[i]
+            letters += 1
+
+        line += word        
+        lines.append(line)
+        
+        for l in lines:
+            render_list.append(self.body_font.render(l, False, (0, 0, 0)))
+
+
+    def draw(self, screen):
+        self.base.draw(screen)
+        if self.item != None:
+            screen.blit(self.item_sprite, self.item_frame)
+            screen.blit(self.item_name_render, ((screen.get_width()-self.item_name_render.get_width())/2, 330))
+            for i in range(len(self.item_desciption_renders)):
+                render = self.item_desciption_renders[i]
+                screen.blit(render, ((screen.get_width()-render.get_width())/2, 400 + i * 20))
+        screen.blit(self.indication_render, ((screen.get_width()-self.indication_render.get_width())/2, 540))

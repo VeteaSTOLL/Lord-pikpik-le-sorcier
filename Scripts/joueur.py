@@ -124,6 +124,7 @@ class joueur(pygame.sprite.Sprite):
 
         # autres
         self.item_indicator = item_indicator()
+        
 
     def move(self, direction, collision_list, item_manager):
         if not collision_list.check_collision_player((self.destination[0]+direction, self.destination[1]), self.body):
@@ -284,6 +285,11 @@ class joueur(pygame.sprite.Sprite):
             self.face_rect.centery = self.pos[1] + 50 * face_coords[0] + 25
             screen.blit(self.face_sprite, self.face_rect)
             self.item_indicator.draw(screen, self.pos[0] + 50 * face_coords[1], self.pos[1] + 50 * face_coords[0]-50)
+
+        if self.can_move:
+            pass
+        if self.can_jump:
+            pass
     
     def check_body(self, collision_list):
         nb_1 = 0
