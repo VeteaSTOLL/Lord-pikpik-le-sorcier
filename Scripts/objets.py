@@ -43,8 +43,9 @@ class item_manager():
         self.roulette = item("roulette", 2, "img/roulette.png", [True, False, False, False])
         self.botte = item("botte", 3, "img/botte.png", [True, False, False, False])
         self.porte = item("porte", 4, "img/porte.jpg", [False, False, False, False])
+        self.aile = item("aile",5,"img/ailes.png",[False,True,False,False])
 
-        self.item_types = [self.roulette, self.botte, self.porte]
+        self.item_types = [self.roulette, self.botte, self.porte, self.aile]
 
         self.objects = []
         

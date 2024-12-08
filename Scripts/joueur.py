@@ -64,6 +64,7 @@ class joueur(pygame.sprite.Sprite):
         self.inertia = 0
         self.can_move = True
         self.can_jump = False
+        self.can_fly = False
 
         #saut
         self.t = 0 #le temps qu'on passe en l'air
@@ -138,7 +139,7 @@ class joueur(pygame.sprite.Sprite):
             pygame.mixer.music.stop()
     
     def check_inputs(self, left, right, collision_list, item_manager):
-        if self.can_move:
+        if self.can_move or self.can_fly:
             if left:
                 self.move(-1, collision_list, item_manager)
                 return True
@@ -167,7 +168,7 @@ class joueur(pygame.sprite.Sprite):
                 self.pos[0] = self.destination[0] * 50
                 self.direction = 0                
                 pygame.mixer.music.stop()
-        elif self.direction == 0:
+        elif self.direction == 0 or self.can_fly:
             self.check_inputs(left, right, collision_list, item_manager)
         self.item_indicator.update(dt)
 
@@ -182,7 +183,7 @@ class joueur(pygame.sprite.Sprite):
             self.item_indicator.disable()
         
     def apply_gravity(self, dt, collision_list):
-        if not self.lower_collision or self.is_jumping: # si on est en l'air ou qu'on a sauté
+        if not self.lower_collision or self.is_jumping or self.can_fly: # si on est en l'air ou qu'on a sauté
             self.t += dt #on augmente le temps passé en l'air
             self.pos[1] += (2 * self.gravity * self.t - self.b) * dt #des maths bizarre (la dérivée de ax² + bx avec a := gravity et b := b)
         self.destination[1] = self.pos[1] // 50 #on update destination
@@ -300,6 +301,12 @@ class joueur(pygame.sprite.Sprite):
                 if self.body[i][j] == 2 and collision_list.check_collision((self.destination[0] + j, self.destination[1] + i + 1)):
                     self.can_move = True
                 if self.body[i][j] == 3 and collision_list.check_collision((self.destination[0] + j, self.destination[1] + i + 1)):                    
+                    self.can_jump = True
+                if self.body[i][j] == 5 and collision_list.check_collision((self.destination[0] + j, self.destination[1] + i + 1)):
+                    self.can_move = True
+                    self.can_jump = True
+                    self.gravity = 300
+                    
                     self.can_jump = True
         
         self.is_ball = (nb_1 == 1 and nb_bodypart == 1)

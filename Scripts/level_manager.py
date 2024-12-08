@@ -12,7 +12,10 @@ class Level_manager:
         self.levels=[
             {
                 "collisions" : [                
-                    (0, 14, 13, 4),
+                    (0, 14, 13, 4),#Plafond
+                    (20, 0, 1, 16), #bord écran droit
+                    (-1, 0, 1, 16),#Bord écran gauche
+                    (0, -1, 20, 1),#sol
                     (15, 14, 20, 4),
                     (5, 10, 3, 4),
                     (17, 9, 3, 5)
@@ -27,6 +30,29 @@ class Level_manager:
             },
             {
                 "collisions" :[
+                    (0, 14, 13, 4),#Plafond
+                    (20, 0, 1, 16), #bord écran droit
+                    (-1, 0, 1, 16),#Bord écran gauche
+                    (0, 14, 20, 4),
+                    (18, 4, 2, 1),
+                    (18, 6, 2, 1),
+                    (13, 5, 1, 5),
+                    (3, 7, 1, 1),
+                    (10, 6, 1, 1),
+                    (6, 3, 1, 5),
+                    (9, 12, 1, 1),
+
+                    
+                    
+                ],
+                
+                "items":[
+                    (self.item_manager.aile, 3, 13, 1, 1),
+                    (self.item_manager.porte, 19,5,1,1),
+                ]
+            },
+            {
+                "collisions" :[
                     (0, 14, 20, 4),
                     (2, 5, 1, 5),
                     (3, 5, 2, 1),
@@ -37,14 +63,6 @@ class Level_manager:
                     (11, 7, 1, 1),
                     (12, 8, 1, 1),
                     (13, 5, 1, 5)
-                ],
-                
-                "items":[
-                    (self.item_manager.roulette, 3, 13, 1, 1)
-                ]
-            },
-            {
-                "collisions" :[
                 ],
                 
                 "items":[

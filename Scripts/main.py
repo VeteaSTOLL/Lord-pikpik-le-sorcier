@@ -13,7 +13,7 @@ running = True
 
 #charger notre jeu
 game = Game(screen)
-current_level = 1
+current_level = 2
 niveau = game.level_manager.creer_niveau(current_level)
 
 game.collision_list = niveau.get_collisions()
@@ -122,8 +122,7 @@ while running:
         game.interface_craft.draw_crafting_interface(screen)
 
     if  game.joueur.pos[1]>750 :
-        #game.joueur.reset_body()
-        #game.interface_craft.reset_interface()
+
         image = pygame.image.load("img/game_over.png")
         screen.fill((0, 0, 0))
         screen.blit(image,(0,0))
