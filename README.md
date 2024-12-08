@@ -1,4 +1,4 @@
-# Lord-pikpik-le-sorcier ![alt text](/img/game_over.png)
+# Lord-pikpik-le-sorcier ![alt text](/img/readme/pikpik.png)
 
 # But du jeu
 Un jour, un sinistre sorcier nommé "Lord pik-pik le sorcier" vous à jeté un sort. Il vous a volé votre apparence corporelle pour vous laisser sous forme d'une boule.
@@ -22,16 +22,21 @@ Remarque : Vous n'êtes pas obligé de prendre des objets, certains seront la po
 ## Commandes :
 
 - E : Ouverture / Fermeture de l'interface de craft 
-      - ![alt text](/img/readme/interface.mp4)
+      - <video width="640" height="360" controls>
+  <source src="img/readme/interface.mp4" type="video/mp4">
+</video>
   
 - R : Recommencer le niveau actuel
-      - ![alt text](/img/readme/reset.mp4)
+      - <video width="640" height="360" controls>
+  <source src="img/readme/reset.mp4" type="video/mp4">
   
 -  Flèches : Avancer
-      - ![alt text](/img/readme/bouger.mp4)
+      - <video width="640" height="360" controls>
+  <source src="img/readme/bouger.mp4" type="video/mp4">
         
 - Espace : Sauter
-      - ![alt text](/img/readme/bouger.mp4)
+      - <video width="640" height="360" controls>
+  <source src="img/readme/sauter.mp4" type="video/mp4">
 
       
 ## Installation:
