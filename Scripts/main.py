@@ -13,7 +13,7 @@ running = True
 
 #charger notre jeu
 game = Game(screen)
-current_level = 2
+current_level = 1
 niveau = game.level_manager.creer_niveau(current_level)
 
 game.collision_list = niveau.get_collisions()
@@ -85,6 +85,8 @@ while running:
             else:       
                 object = game.item_manager.check_collision(game.joueur.body, game.joueur.destination)
                 if object and object.item.name == "porte":
+                    game.level_manager.door_sound.play()
+                   
                     current_level += 1
                     niveau = game.level_manager.creer_niveau(current_level)
                     game.joueur.reset_body()
@@ -101,10 +103,12 @@ while running:
         game.debug.debug_mode = not game.debug.debug_mode    
 
     if game.pressed_down.get(pygame.K_r):
+        game.level_manager.game_over_sound.stop()
         niveau = game.level_manager.creer_niveau(current_level)
         game.joueur.reset_body()
         game.interface_craft.reset_interface()
     
+
     #affichage
     screen.fill((255,255,255))
     
@@ -125,8 +129,10 @@ while running:
         game.interface_item_discovery.draw(screen)
 
     if  game.joueur.pos[1]>750 :
-
+        current_level = 1
         image = pygame.image.load("img/game_over.png")
+        #pygame.mixer.music.load('sounds/slide.wav')
+        game.level_manager.game_over_sound.play()
         screen.fill((0, 0, 0))
         screen.blit(image,(0,0))
         

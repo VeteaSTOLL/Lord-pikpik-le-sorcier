@@ -1,4 +1,4 @@
-# level_manager.py
+import pygame
 from level import Level
 from objets import item_manager
 from joueur import *
@@ -8,14 +8,16 @@ from level_manager import*
 class Level_manager:
     def __init__(self):
         self.item_manager = item_manager()
+        self.game_over_sound = pygame.mixer.Sound("sounds/game_over.wav")
+        self.door_sound = pygame.mixer.Sound("sounds/door.wav")
         self.nb_level = 3
         self.levels=[
             {
                 "collisions" : [                
-                    (0, 14, 13, 4),#Plafond
+                    (0, 14, 13, 4),#Sol
                     (20, 0, 1, 16), #bord écran droit
                     (-1, 0, 1, 16),#Bord écran gauche
-                    (0, -1, 20, 1),#sol
+                    (0, -1, 20, 1),#Plafond
                     (15, 14, 20, 4),
                     (5, 10, 3, 4),
                     (17, 9, 3, 5)
@@ -30,7 +32,7 @@ class Level_manager:
             },
             {
                 "collisions" :[
-                    (0, 14, 13, 4),#Plafond
+                    (0, -1, 20, 1),#Plafond
                     (20, 0, 1, 16), #bord écran droit
                     (-1, 0, 1, 16),#Bord écran gauche
                     (0, 14, 20, 4),
@@ -82,4 +84,5 @@ class Level_manager:
         self.creer_niveau(current_level)
         joueur.reset_body()
         Interface_Craft.reset_interface()
+        
         
