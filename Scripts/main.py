@@ -66,35 +66,36 @@ while running:
                 game.joueur.jump()
         # Sauter si la touche Espace est pressée
 
-    if game.pressed_down.get("clic_souris"):
-        if game.interface_craft.is_open:
+
+    if game.interface_craft.is_open and not game.interface_item_discovery.is_open:
+        if game.pressed_down.get("clic_souris"):
             game.interface_craft.click_down(pygame.mouse.get_pos())
-    if game.pressed.get("clic_souris"):
-        if game.interface_craft.is_open:
+        if game.pressed.get("clic_souris"):
             game.interface_craft.click(pygame.mouse.get_pos(), game.joueur.body)
-    if game.pressed_up.get("clic_souris"):
-        if game.interface_craft.is_open:
+        if game.pressed_up.get("clic_souris"):
             game.interface_craft.click_up(pygame.mouse.get_pos(), game.joueur.body)
 
     if game.pressed_down.get(pygame.K_e):
         #ouvrir ou fermer le menu de craft
-        if game.interface_craft.is_open:
-            error = game.joueur.is_body_valid(game.item_manager.item_types)
-            game.interface_craft.close(error)
-            game.joueur.check_for_item(game.item_manager)
-        else:       
-            object = game.item_manager.check_collision(game.joueur.body, game.joueur.destination)
-            if object and object.item.name == "porte":
-                current_level += 1
-                niveau = game.level_manager.creer_niveau(current_level)
-                game.joueur.reset_body()
-                game.interface_craft.reset_interface()
-            else:     
-                game.interface_craft.open(game.joueur, game.collision_list, object)
-    
-    
-
-    
+        if not game.interface_item_discovery.is_open:
+            if game.interface_craft.is_open:
+                error = game.joueur.is_body_valid(game.item_manager.item_types)
+                game.interface_craft.close(error)
+                game.joueur.check_for_item(game.item_manager)
+            else:       
+                object = game.item_manager.check_collision(game.joueur.body, game.joueur.destination)
+                if object and object.item.name == "porte":
+                    current_level += 1
+                    niveau = game.level_manager.creer_niveau(current_level)
+                    game.joueur.reset_body()
+                    game.interface_craft.reset_interface()
+                else:     
+                    game.interface_craft.open(game.joueur, game.collision_list, object)
+                    if object != None and not object.item.discovered:
+                        game.interface_item_discovery.open(object.item)
+        else:
+            game.interface_item_discovery.close()
+      
     if game.pressed_down.get(pygame.K_F1):
         #active le mode debug
         game.debug.debug_mode = not game.debug.debug_mode    
@@ -120,6 +121,8 @@ while running:
     if game.interface_craft.is_open:
         #on affiche l'UI pour le craft du perso
         game.interface_craft.draw_crafting_interface(screen)
+    if game.interface_item_discovery.is_open:
+        game.interface_item_discovery.draw(screen)
 
     if  game.joueur.pos[1]>750 :
 

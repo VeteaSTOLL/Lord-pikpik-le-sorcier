@@ -20,5 +20,6 @@ class Game:
         self.collision_list = collision_list()
         self.item_manager = item_manager() 
         self.interface_craft = Interface_Craft(screen.get_width(), screen.get_height())
+        self.interface_item_discovery = Interface_Item_Discovery(screen.get_width(), screen.get_height())
                 
         self.level_manager = Level_manager()

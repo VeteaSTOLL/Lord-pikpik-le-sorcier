@@ -1,13 +1,15 @@
 import pygame 
 
 class item ():
-    def __init__(self, name, id, image_path, connectivity):
+    def __init__(self, name, id, image_path, connectivity, description=""):
         self.name = name
         self.id = id
         self.image_path = image_path
         self.image = pygame.image.load(image_path)
         self.image = pygame.transform.scale(self.image, (50, 50))
         self.connectivity = connectivity
+        self.description = description
+        self.discovered = False
 
     def is_correctly_placed(self, body, i, j):
         offset = [[-1,0],[0,1],[1,0],[0,-1]]
@@ -40,8 +42,8 @@ class object():
 
 class item_manager():
     def __init__(self):
-        self.roulette = item("roulette", 2, "img/roulette.png", [True, False, False, False])
-        self.botte = item("botte", 3, "img/botte.png", [True, False, False, False])
+        self.roulette = item("roulette", 2, "img/roulette.png", [True, False, False, False], "Permet de rouler de gauche à droite quand elle est en contact avec le sol, se place sous le joueur.")
+        self.botte = item("ressort", 3, "img/botte.png", [True, False, False, False], "Permet de sauter quand il est en contact avec le sol, se place sous le joueur.")
         self.porte = item("porte", 4, "img/porte.jpg", [False, False, False, False])
         self.aile = item("aile",5,"img/ailes.png",[False,True,False,False])
 
