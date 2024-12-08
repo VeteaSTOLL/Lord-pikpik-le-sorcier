@@ -8,8 +8,13 @@ from level_manager import*
 class Level_manager:
     def __init__(self):
         self.item_manager = item_manager()
+        
         self.game_over_sound = pygame.mixer.Sound("sounds/game_over.wav")
         self.door_sound = pygame.mixer.Sound("sounds/door.wav")
+        
+        self.video = "video/End.mp4"
+        
+        
         self.nb_level = 3
         self.levels=[
             {
@@ -80,9 +85,3 @@ class Level_manager:
         objets_elem = level["items"]
         return Level(collisions_elem, objets_elem)
     
-    def load_level(self, current_level):
-        self.creer_niveau(current_level)
-        joueur.reset_body()
-        Interface_Craft.reset_interface()
-        
-        

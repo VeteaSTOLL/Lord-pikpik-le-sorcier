@@ -184,7 +184,17 @@ class joueur(pygame.sprite.Sprite):
             self.item_indicator.disable()
         
     def apply_gravity(self, dt, collision_list):
-        if not self.lower_collision or self.is_jumping or self.can_fly: # si on est en l'air ou qu'on a sauté
+        if self.can_fly:  # Gestion du vol
+            self.t += dt
+            self.pos[1] += (2 * self.gravity * self.t - self.b) * dt
+            self.destination[1] = self.pos[1] // 50
+
+            if collision_list.check_collision_player((self.destination[0], self.destination[1]+1), self.body):
+                self.t = 0  # Réinitialise le temps en vol si touche le sol
+            else:
+                self.can_jump = False
+            
+        if not self.lower_collision or self.is_jumping: # si on est en l'air ou qu'on a sauté
             self.t += dt #on augmente le temps passé en l'air
             self.pos[1] += (2 * self.gravity * self.t - self.b) * dt #des maths bizarre (la dérivée de ax² + bx avec a := gravity et b := b)
         self.destination[1] = self.pos[1] // 50 #on update destination
@@ -213,7 +223,7 @@ class joueur(pygame.sprite.Sprite):
 
     def jump(self):
         #Fait sauter le joueur s'il n'est pas déjà en train de sauter.
-        if not self.is_jumping:
+        if not self.is_jumping or self.lower_collision:
             self.is_jumping = True
             self.inertia = self.direction
             pygame.mixer.Sound.play(self.son_boing)
@@ -308,12 +318,11 @@ class joueur(pygame.sprite.Sprite):
                     self.can_move = True
                 if self.body[i][j] == 3 and collision_list.check_collision((self.destination[0] + j, self.destination[1] + i + 1)):                    
                     self.can_jump = True
-                if self.body[i][j] == 5 and collision_list.check_collision((self.destination[0] + j, self.destination[1] + i + 1)):
+                    
+                if self.body[i][j] == 5:
                     self.can_move = True
                     self.can_jump = True
                     self.gravity = 300
-                    
-                    self.can_jump = True
         
         self.is_ball = (nb_1 == 1 and nb_bodypart == 1)
         self.can_move = self.can_move or self.is_ball

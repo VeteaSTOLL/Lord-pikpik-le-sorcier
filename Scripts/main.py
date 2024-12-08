@@ -1,5 +1,7 @@
 import pygame
 from games import Game
+#from moviepy.editor import VideoFileClip
+
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -108,7 +110,11 @@ while running:
         game.joueur.reset_body()
         game.interface_craft.reset_interface()
     
-
+    # if current_level == game.level_manager.nb_level:
+    #     clip = VideoFileClip('video/end.mp4')
+    #     clip.preview()
+    
+    
     #affichage
     screen.fill((255,255,255))
     
@@ -131,7 +137,6 @@ while running:
     if  game.joueur.pos[1]>750 :
         current_level = 1
         image = pygame.image.load("img/game_over.png")
-        #pygame.mixer.music.load('sounds/slide.wav')
         game.level_manager.game_over_sound.play()
         screen.fill((0, 0, 0))
         screen.blit(image,(0,0))
