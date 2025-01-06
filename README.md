@@ -1,12 +1,12 @@
 # Lord-pikpik-le-sorcier ![personnage](/video/readme/bouboule.png)
 
-## Serez-vous capable de passer au travers de tous les niveaux qui testerons vos capacité et votre compréhensions des différentes mécaniques qui vous sont offertes?
+### Serez-vous capable de passer au travers de tous les niveaux qui testeront vos capacités et votre compréhension des différentes mécaniques qui vous sont offertes?
 
 ---
 
 # Jeu
 ## Règles :
-Afin de passer de niveaux en niveaux vous disposez de la capacité : transformation corporelle. Des items seront également mis à disposition afin de vous aider, ou pas.
+Afin de passer de niveau en niveau, vous disposez de la capacité : transformation corporelle. Des items seront également mis à disposition afin de vous aider, ou pas.
 
 ---
 
