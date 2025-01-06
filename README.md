@@ -23,20 +23,20 @@ Remarque : Vous n'êtes pas obligé de prendre des objets, certains seront la po
 
 - E : Ouverture / Fermeture de l'interface de craft 
       - <video width="640" height="360" controls>
-  <source src="img/readme/interface.mp4" type="video/mp4">
+  <source src="video/readme/interface.gif" type="video/mp4">
 </video>
   
 - R : Recommencer le niveau actuel
       - <video width="640" height="360" controls>
-  <source src="img/readme/reset.mp4" type="video/mp4">
+  <source src="video/readme/reset.gif" type="video/mp4">
   
 -  Flèches : Avancer
       - <video width="640" height="360" controls>
-  <source src="img/readme/bouger.mp4" type="video/mp4">
+  <source src="video/readme/bouger.gif" type="video/mp4">
         
 - Espace : Sauter
       - <video width="640" height="360" controls>
-  <source src="img/readme/sauter.mp4" type="video/mp4">
+  <source src="video/readme/sauter.gif" type="video/mp4">
 
       
 ## Installation:
